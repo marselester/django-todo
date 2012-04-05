@@ -22,12 +22,14 @@ class Task(models.Model):
         (STOP_STATUS, 'stop')
     )
 
+    FIRST_TASK = 1
+
     # Core fields.
     worker = models.ForeignKey(User)
     task = models.TextField()
     deadline = models.DateTimeField()
     # Metadata.
-    finish_date = models.DateTimeField()
+    finish_date = models.DateTimeField(null=True)
     status = models.IntegerField(choices=STATUS_CHOICES,
                                  default=UNCERTAIN_STATUS)
     chain = models.ForeignKey(Chain)
