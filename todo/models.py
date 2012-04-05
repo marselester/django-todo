@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class Chain(models.Model):
     """Цепочка задач."""
     name = models.TextField()
+    start_date = models.DateTimeField()
+    priority = models.IntegerField(default=0)
+    owner = models.ForeignKey(User)
 
 
 class Task(models.Model):
