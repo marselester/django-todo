@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -37,3 +39,13 @@ class Task(models.Model):
 
     def __unicode__(self):
         return self.task
+
+    def actual_status(self):
+        """Определяет фактический статус задачи."""
+        if self.status in (self.DONE_STATUS, self.STOP_STATUS):
+            return self.status
+        if self.order == self.FIRST_TASK:
+            if self.chain.start_date > datetime.now():
+                return self.WAIT_STATUS
+            else:
+                return self.WORK_STATUS
