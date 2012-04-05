@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Chain(models.Model):
@@ -18,9 +19,16 @@ class Task(models.Model):
         (STOP_STATUS, 'stop')
     )
 
-    status = models.IntegerField(choices=STATUS_CHOICES, default=UNCERTAIN_STATUS)
+    # Core fields.
+    worker = models.ForeignKey(User)
     task = models.TextField()
+    deadline = models.DateTimeField()
+    # Metadata.
+    finish_date = models.DateTimeField()
+    status = models.IntegerField(choices=STATUS_CHOICES,
+                                 default=UNCERTAIN_STATUS)
     chain = models.ForeignKey(Chain)
+    order = models.IntegerField()
 
     def __unicode__(self):
         return self.task
