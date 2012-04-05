@@ -33,3 +33,22 @@ class ActualStatusTest(TestCase):
                                          deadline=deadline, chain=chain,
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.actual_status(), Task.WAIT_STATUS)
+
+    def testPrevTaskNotDone(self):
+        """Тестирует статус WAIT, проверяя статус предыдущей задачи.
+
+        Статус предыдущей задачи не должен быть DONE.
+        """
+
+    def testFirstTaskWork(self):
+        """Тестирует статус WORK у первой задачи.
+
+        Задача стоит первой в цепочке и наступила дата начала работы над
+        цепочкой.
+        """
+
+    def testPrevTaskDone(self):
+        """Тестирует статус WORK, проверяя статус предыдущей задачи.
+
+        Статус предыдущей задачи должен быть DONE.
+        """
