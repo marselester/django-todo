@@ -39,6 +39,22 @@ class ActualStatusTest(TestCase):
 
         Статус предыдущей задачи не должен быть DONE.
         """
+        now = datetime.now()
+        chain_start_date = now - timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline_first_task = chain_start_date + timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline_first_task,
+                                         chain=chain,
+                                         order=Task.FIRST_TASK)
+        deadline_second_task = deadline_first_task + timedelta(days=2)
+        second_task = Task.objects.create(worker=self.programmer,
+                                          task='Programming',
+                                          deadline=deadline_second_task,
+                                          chain=chain,
+                                          order=Task.FIRST_TASK + 1)
+        self.assertEqual(second_task.actual_status(), Task.WAIT_STATUS)
 
     def testFirstTaskWork(self):
         """Тестирует статус WORK у первой задачи.
