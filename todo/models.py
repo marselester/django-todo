@@ -49,3 +49,9 @@ class Task(models.Model):
                 return self.WAIT_STATUS
             else:
                 return self.WORK_STATUS
+        order_prev_task = self.order - 1
+        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        if prev_task.status == self.DONE_STATUS:
+            return self.WORK_STATUS
+        else:
+            return self.WAIT_STATUS
