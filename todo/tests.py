@@ -104,3 +104,7 @@ class TaskActualStatusTest(TestCase):
                                           chain=chain,
                                           order=Task.FIRST_TASK + 1)
         self.assertEqual(second_task.actual_status(), Task.WORK_STATUS)
+
+
+class TaskStartDateTest(TestCase):
+    """Тестирует определение даты начала работы над задачей."""
