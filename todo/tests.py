@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from todo.models import Chain, Task
 
 
-class ActualStatusTest(TestCase):
+class TaskActualStatusTest(TestCase):
+    """Тестирует определение статуса задачи."""
     def setUp(self):
         Task.objects.all().delete()
         Chain.objects.all().delete()
