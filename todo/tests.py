@@ -140,6 +140,24 @@ class TaskStartDateTest(TestCase):
         Дата начала совпадает с датой дедлайна предыдущей задачи (дедлайн
         не просрочен). Предыдущая задача может иметь статус WAIT, WORK, STOP.
         """
+        now = datetime.now()
+        chain_start_date = now - timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline_first_task = chain_start_date + timedelta(days=3)
+        Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline_first_task,
+                                         chain=chain,
+                                         order=Task.FIRST_TASK)
+        deadline_second_task = deadline_first_task + timedelta(days=2)
+        Task.objects.create(worker=self.programmer,
+                                          task='Programming',
+                                          deadline=deadline_second_task,
+                                          chain=chain,
+                                          order=Task.FIRST_TASK + 1)
+        first_task = Task.objects.get(task='Design')
+        second_task = Task.objects.get(task='Programming')
+        self.assertEqual(second_task.start_date(), first_task.deadline)
 
     def testWork(self):
         """Тестирует дату начала работы задачи со статусом WORK.
