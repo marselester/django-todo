@@ -108,12 +108,31 @@ class TaskActualStatusTest(TestCase):
 
 class TaskStartDateTest(TestCase):
     """Тестирует определение даты начала работы над задачей."""
+    def setUp(self):
+        Task.objects.all().delete()
+        Chain.objects.all().delete()
+        User.objects.all().delete()
+        self.manager = User.objects.create_user('manager', 'manager@test.com')
+        self.designer = User.objects.create_user('designer',
+                                                 'designer@test.com')
+        self.programmer = User.objects.create_user('programmer',
+                                                   'programmer@test.com')
+
     def testFirstTask(self):
         """Тестирует дату начала работы первой задачи.
 
         Дата начала первой задачи совпадает с датой начала цепочки. Это условие
         верно для задач с любым статусом.
         """
+        now = datetime.now()
+        chain_start_date = now + timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.start_date(), chain.start_date)
 
     def testWait(self):
         """Тестирует дату начала работы задачи со статусом WAIT.
