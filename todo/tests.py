@@ -49,10 +49,9 @@ class TaskActualStatusTest(TestCase):
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
         deadline_first_task = chain_start_date + timedelta(days=3)
-        first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline_first_task,
-                                         chain=chain,
-                                         order=Task.FIRST_TASK)
+        Task.objects.create(worker=self.designer, task='Design', chain=chain,
+                            deadline=deadline_first_task,
+                            order=Task.FIRST_TASK)
         deadline_second_task = deadline_first_task + timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
@@ -91,12 +90,9 @@ class TaskActualStatusTest(TestCase):
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
         deadline_first_task = chain_start_date + timedelta(days=3)
-        first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline_first_task,
-                                         finish_date=now,
-                                         chain=chain,
-                                         order=Task.FIRST_TASK,
-                                         status=Task.DONE_STATUS)
+        Task.objects.create(worker=self.designer, task='Design', chain=chain,
+                            deadline=deadline_first_task, finish_date=now,
+                            order=Task.FIRST_TASK, status=Task.DONE_STATUS)
         deadline_second_task = deadline_first_task + timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
