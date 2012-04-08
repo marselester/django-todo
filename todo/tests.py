@@ -184,3 +184,17 @@ class TaskStartDateTest(TestCase):
         Статус задачи WAIT, предыдущая задача превысила дедлайн. Предыдущая
         задача может иметь статус WAIT, WORK, STOP.
         """
+        now = datetime.now()
+        chain_start_date = now - timedelta(days=10)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline_first_task = chain_start_date + timedelta(days=3)
+        Task.objects.create(worker=self.designer, task='Design', chain=chain,
+                            deadline=deadline_first_task,
+                            order=Task.FIRST_TASK)
+        deadline_second_task = deadline_first_task + timedelta(days=2)
+        Task.objects.create(worker=self.programmer, task='Programming',
+                            deadline=deadline_second_task, chain=chain,
+                            order=Task.FIRST_TASK + 1)
+        second_task = Task.objects.get(task='Programming')
+        self.assertEqual(second_task.start_date(), None)
