@@ -55,3 +55,22 @@ class Task(models.Model):
             return self.WORK_STATUS
         else:
             return self.WAIT_STATUS
+
+    def start_date(self):
+        """Определяет дату начала работы над задачей, если это возможно."""
+        # Для первой задачи равна дате начала работы над цепочкой.
+        if self.order == self.FIRST_TASK:
+            return self.chain.start_date
+        order_prev_task = self.order - 1
+        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        # Для статуса WAIT равна дедлайну предыдущей задачи. Если дедлайн
+        # просрочен, дата начала задачи не прогнозируема.
+        # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
+        if self.actual_status() == self.WAIT_STATUS:
+            if prev_task.deadline > datetime.now():
+                start_date = prev_task.deadline
+            else:
+                start_date = None
+        else:
+            start_date = prev_task.finish_date
+        return start_date
