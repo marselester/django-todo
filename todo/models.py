@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -51,7 +51,7 @@ class Task(models.Model):
         if self.status in (self.DONE_STATUS, self.STOP_STATUS):
             return self.status
         if self.order == self.FIRST_TASK:
-            if self.chain.start_date > datetime.now():
+            if self.chain.start_date > datetime.date.today():
                 return self.WAIT_STATUS
             else:
                 return self.WORK_STATUS
@@ -73,7 +73,7 @@ class Task(models.Model):
         # просрочен, дата начала задачи не прогнозируема.
         # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
         if self.actual_status() == self.WAIT_STATUS:
-            if prev_task.deadline > datetime.now():
+            if prev_task.deadline > datetime.date.today():
                 start_date = prev_task.deadline
             else:
                 start_date = None
