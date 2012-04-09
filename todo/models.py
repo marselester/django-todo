@@ -11,6 +11,12 @@ class Chain(models.Model):
     priority = models.IntegerField(default=0)
     owner = models.ForeignKey(User)
 
+    def actual_status(self):
+        """Определяет фактический статус цепочки."""
+
+    def deadline(self):
+        """Определяет дедлайн цепочки."""
+
 
 class Task(models.Model):
     """Задача."""
