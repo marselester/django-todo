@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
+import datetime
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -26,11 +26,11 @@ class TaskActualStatusTest(TestCase):
         не наступила. Цепочка начнет работать через 1 день, на дизайн выделено
         3 дня.
         """
-        now = datetime.now()
-        chain_start_date = now + timedelta(days=1)
+        today = datetime.date.today()
+        chain_start_date = today + datetime.timedelta(days=1)
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
-        deadline = chain_start_date + timedelta(days=3)
+        deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
                                          deadline=deadline, chain=chain,
                                          order=Task.FIRST_TASK)
@@ -44,15 +44,15 @@ class TaskActualStatusTest(TestCase):
         Программист ожидает результы работы дизайнера через 1 день
         (послезавтра).
         """
-        now = datetime.now()
-        chain_start_date = now - timedelta(days=1)
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
-        deadline_first_task = chain_start_date + timedelta(days=3)
+        deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
                             deadline=deadline_first_task,
                             order=Task.FIRST_TASK)
-        deadline_second_task = deadline_first_task + timedelta(days=2)
+        deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
                                           deadline=deadline_second_task,
@@ -67,11 +67,11 @@ class TaskActualStatusTest(TestCase):
         цепочкой. Цепочка начала работать 1 день назад, на дизайн выделено
         3 дня.
         """
-        now = datetime.now()
-        chain_start_date = now - timedelta(days=1)
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
-        deadline = chain_start_date + timedelta(days=3)
+        deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
                                          deadline=deadline, chain=chain,
                                          order=Task.FIRST_TASK)
@@ -85,15 +85,15 @@ class TaskActualStatusTest(TestCase):
         Программист досрочно (на 1 день раньше) получил результаты работы
         дизайнера.
         """
-        now = datetime.now()
-        chain_start_date = now - timedelta(days=2)
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=2)
         chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
                                      owner=self.manager)
-        deadline_first_task = chain_start_date + timedelta(days=3)
+        deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
-                            deadline=deadline_first_task, finish_date=now,
+                            deadline=deadline_first_task, finish_date=today,
                             order=Task.FIRST_TASK, status=Task.DONE_STATUS)
-        deadline_second_task = deadline_first_task + timedelta(days=2)
+        deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
                                           deadline=deadline_second_task,
