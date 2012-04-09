@@ -80,3 +80,12 @@ class Task(models.Model):
         else:
             start_date = prev_task.finish_date
         return start_date
+
+    def time_remaining(self):
+        """Определяет оставшееся время до дедлайна."""
+
+    def time_after_deadline(self):
+        """Определяет время, прошедшее после дедлайна."""
+
+    def elapsed_time(self):
+        """Определяет время, затраченное на задачу."""
