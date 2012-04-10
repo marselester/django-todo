@@ -194,3 +194,34 @@ class TaskStartDateTest(TestCase):
                             order=Task.FIRST_TASK + 1)
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), None)
+
+
+class TaskTimeRemainingTest(TestCase):
+    """Тестирует определение оставшегося времени до дедлайна."""
+    def setUp(self):
+        Task.objects.all().delete()
+        Chain.objects.all().delete()
+        User.objects.all().delete()
+        self.manager = User.objects.create_user('manager', 'manager@test.com')
+        self.designer = User.objects.create_user('designer',
+                                                 'designer@test.com')
+        self.programmer = User.objects.create_user('programmer',
+                                                   'programmer@test.com')
+
+    def testBeforeDeadline(self):
+        """Тестирует случай, когда дедлайн еще не наступил.
+
+        Задача работает второй день, на выполнение отведено 3 дня.
+        """
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.remaining_days(), 1)
+
+    def testAfterDeadline(self):
+        """Тестирует случай, когда дедлайн просрочен."""
