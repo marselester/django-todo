@@ -227,12 +227,53 @@ class ExpendedDaysTest(TaskTest):
     """Тестирует определение количества дней, затраченных на задачу."""
     def testWait(self):
         """Тестирует случай, когда задача ожидает начала работы."""
+        today = datetime.date.today()
+        chain_start_date = today + datetime.timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.expended_days(), 0)
 
     def testWork(self):
         """Тестирует случай, когда задача работает."""
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=4)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         status=Task.DONE_STATUS,
+                                         finish_date=today,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.expended_days(), 5)
 
     def testDone(self):
         """Тестирует случай, когда задача завершена."""
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         status=Task.DONE_STATUS,
+                                         finish_date=today,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.expended_days(), 2)
 
     def testStop(self):
         """Тестирует случай, когда задача остановлена."""
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         status=Task.STOP_STATUS,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.expended_days(), None)
