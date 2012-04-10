@@ -222,6 +222,20 @@ class TaskTimeRemainingTest(TestCase):
                                          deadline=deadline, chain=chain,
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.remaining_days(), 1)
+        self.assertEqual(first_task.days_quantity_after_deadline(), None)
 
     def testAfterDeadline(self):
-        """Тестирует случай, когда дедлайн просрочен."""
+        """Тестирует случай, когда дедлайн просрочен.
+
+        Задача работает 5 день, на выполнение отведено 3 дня.
+        """
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=4)
+        chain = Chain.objects.create(name='Chain', start_date=chain_start_date,
+                                     owner=self.manager)
+        deadline = chain_start_date + datetime.timedelta(days=3)
+        first_task = Task.objects.create(worker=self.designer, task='Design',
+                                         deadline=deadline, chain=chain,
+                                         order=Task.FIRST_TASK)
+        self.assertEqual(first_task.days_quantity_after_deadline(), 2)
+        self.assertEqual(first_task.remaining_days(), None)
