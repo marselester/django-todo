@@ -81,11 +81,24 @@ class Task(models.Model):
             start_date = prev_task.finish_date
         return start_date
 
-    def time_remaining(self):
-        """Определяет оставшееся время до дедлайна."""
+    def remaining_days(self):
+        """Определяет количество дней, оставшихся до дедлайна.
 
-    def time_after_deadline(self):
-        """Определяет время, прошедшее после дедлайна."""
+        Например, задача ограничена сроком [26; 29) и сейчас 27 число.
+        До дедлайна остался 1 полный день (28 число), так как текущий день
+        не учитывается.
+        """
+        today = datetime.date.today()
+        if today < self.deadline:
+            # Учитываем только полные дни
+            time_remaining = self.deadline - today - datetime.timedelta(days=1)
+            remaining_days = time_remaining.days
+        else:
+            remaining_days = None
+        return remaining_days
 
-    def elapsed_time(self):
-        """Определяет время, затраченное на задачу."""
+    def days_quantity_after_deadline(self):
+        """Определяет количество дней, на которые просрочена задача."""
+
+    def expended_days(self):
+        """Определяет количество дней, затраченных на задачу."""
