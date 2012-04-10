@@ -109,3 +109,17 @@ class Task(models.Model):
 
     def expended_days(self):
         """Определяет количество дней, затраченных на задачу."""
+        status = self.actual_status()
+        if status == self.WAIT_STATUS:
+            expended_days = 0
+        elif status == self.WORK_STATUS:
+            today = datetime.date.today()
+            expended_time = today - self.start_date() + datetime.timedelta(1)
+            expended_days = expended_time.days
+        elif status == self.DONE_STATUS:
+            expended_time = (self.finish_date - self.start_date()
+                             + datetime.timedelta(days=1))
+            expended_days = expended_time.days
+        else:
+            expended_days = None
+        return expended_days
