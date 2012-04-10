@@ -221,3 +221,18 @@ class DeadlineDaysTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.days_quantity_after_deadline(), 2)
         self.assertEqual(first_task.remaining_days(), None)
+
+
+class ExpendedDaysTest(TaskTest):
+    """Тестирует определение количества дней, затраченных на задачу."""
+    def testWait(self):
+        """Тестирует случай, когда задача ожидает начала работы."""
+
+    def testWork(self):
+        """Тестирует случай, когда задача работает."""
+
+    def testDone(self):
+        """Тестирует случай, когда задача завершена."""
+
+    def testStop(self):
+        """Тестирует случай, когда задача остановлена."""
