@@ -99,6 +99,13 @@ class Task(models.Model):
 
     def days_quantity_after_deadline(self):
         """Определяет количество дней, на которые просрочена задача."""
+        today = datetime.date.today()
+        if today >= self.deadline:
+            time_remaining = today - self.deadline + datetime.timedelta(days=1)
+            remaining_days = time_remaining.days
+        else:
+            remaining_days = None
+        return remaining_days
 
     def expended_days(self):
         """Определяет количество дней, затраченных на задачу."""
