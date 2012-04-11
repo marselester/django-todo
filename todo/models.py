@@ -6,10 +6,13 @@ from django.contrib.auth.models import User
 
 class Chain(models.Model):
     """Цепочка задач."""
+    # Core fields.
     name = models.TextField()
     start_date = models.DateField()
     priority = models.IntegerField(default=0)
+    # Metadata.
     owner = models.ForeignKey(User)
+    archive = models.BooleanField(default=False)
 
     def actual_status(self):
         """Определяет фактический статус цепочки."""
