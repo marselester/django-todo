@@ -5,7 +5,7 @@ def actual_tasks(request):
     """Отображает список актуальных задач для исполнителя."""
 
 
-def task_detail(request):
+def task_detail(request, task_id):
     """Отображает описание задачи для исполнителя."""
 
 
