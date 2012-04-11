@@ -15,3 +15,7 @@ def task_archive(request):
 
 def actual_chains(request):
     """Отображает список актуальных цепочек задач пользователя."""
+
+
+def chain_archive(request):
+    """Отображает архив цепочек задач пользователя."""
