@@ -42,6 +42,7 @@ class Task(models.Model):
                                  default=UNCERTAIN_STATUS)
     chain = models.ForeignKey(Chain)
     order = models.IntegerField()
+    archive = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.task
