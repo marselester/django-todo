@@ -7,3 +7,7 @@ def actual_user_tasks(request):
 
 def task_detail(request):
     """Отображает описание задачи для исполнителя."""
+
+
+def task_archive(request):
+    """Отображает архив задач, в которых пользователь является исполнителем."""
