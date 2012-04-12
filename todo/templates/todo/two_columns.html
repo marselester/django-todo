@@ -1,0 +1,15 @@
+{% extends "todo/base.html" %}
+
+{% block content %}
+<div id="tasklist">
+    <div class="size">
+        {% block left_column %}{% endblock %}
+    </div>
+</div>
+<div id="taskwin">
+    <div class="size">
+        {% block right_column %}{% endblock %}
+    </div>
+</div>
+<br style="clear:both"/>
+{% endblock %}

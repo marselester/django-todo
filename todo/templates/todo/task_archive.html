@@ -1,0 +1,10 @@
+{% extends "todo/two_columns.html" %}
+
+{% block left_column %}
+Список месяцев, в которых были задачи.
+{% endblock %}
+
+{% block right_column %}
+Все задачи выбранного периода. Если период не выбран -- отобразить все задачи
+постранично.
+{% endblock %}
