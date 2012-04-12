@@ -8,15 +8,15 @@ from todo.models import Chain, Task
 
 
 class TaskTest(TestCase):
+    fixtures = ['test_staff.json']
+
     def setUp(self):
         Task.objects.all().delete()
         Chain.objects.all().delete()
-        User.objects.all().delete()
-        self.manager = User.objects.create_user('manager', 'manager@test.com')
-        self.designer = User.objects.create_user('designer',
-                                                 'designer@test.com')
-        self.programmer = User.objects.create_user('programmer',
-                                                   'programmer@test.com')
+        # Сотрудники из test_staff.json
+        self.manager = User.objects.get(username='alexander')
+        self.designer = User.objects.get(username='kazimir')
+        self.programmer = User.objects.get(username='ada')
 
 
 class ActualStatusTest(TaskTest):
