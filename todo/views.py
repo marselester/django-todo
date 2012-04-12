@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 def actual_tasks(request):
     """Отображает список актуальных задач для исполнителя."""
-    return render(request, 'todo/task_list.html')
+    return render(request, 'todo/task_list.html', {'place': 'tasks'})
 
 
 def task_detail(request, task_id):
@@ -19,7 +19,7 @@ def task_archive(request):
 
 def actual_chains(request):
     """Отображает список актуальных цепочек задач для владельца."""
-    return render(request, 'todo/chain_list.html')
+    return render(request, 'todo/chain_list.html', {'place': 'chains'})
 
 
 def chain_archive(request):

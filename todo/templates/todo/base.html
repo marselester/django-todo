@@ -17,10 +17,18 @@
 
     <ul id="menu">
         <li>
-            <a class="item" href="#">Задачи</a>
+            {% if place == 'tasks' %}
+            <b class="item">Задачи</b>
+            {% else %}
+            <a class="item" href="{% url todo_actual_tasks %}">Задачи</a>
+            {% endif %}
         </li>
         <li>
+            {% if place == 'chains' %}
             <b class="item">Цепочки</b>
+            {% else %}
+            <a class="item" href="{% url todo_actual_chains %}">Цепочки</a>
+            {% endif %}
             <div class="button"><form>
             <input class="mainbutton" type="submit" value="Создать новую"/>
             </form></div>
