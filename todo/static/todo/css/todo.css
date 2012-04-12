@@ -1,0 +1,265 @@
+body {
+    font-family: Helvetica, Arial, Sans-serif;
+    background: #fff;
+    color: #333;
+    font-size: 0.877em;
+    padding: 0;
+    margin: 0;
+    line-height: 1.2em;
+    min-width: 800px;
+}
+
+img {
+    border: 0;
+}
+img.ispng{
+    //background-image: none ! important;
+}
+table {
+    font-size: 1em;
+}
+a {
+    color: #168;
+}
+a:visited {
+    color: #555;
+}
+a:hover {
+    color: #000;
+}
+small {
+    font-size: 0.857em;
+    line-height: 1.3em;
+}
+big {
+    font-size: 1.1em;
+    line-height: 1.2em;
+}
+input, textarea, select {
+    font-family: Helvetica, Arial, Sans-serif;
+    font-size: 0.857em;
+}
+textarea {
+    width: 70%;
+}
+h6 {
+    display: inline;
+    color: #999;
+    text-transform: uppercase;
+    font-size: 0.785em;
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+}
+.mainbutton {
+    font-size: 0.785em;
+}
+
+#header {
+    border-bottom: 1px solid #ccc;
+}
+#content {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    //height: 1%;
+}
+#logo {
+    font-size: 1em;
+    margin: 0;
+    padding: 2em 3em;
+}
+#user {
+    float: right;
+    padding: 3em;
+}
+#menu {
+    list-style: none;
+    margin: 0;
+    padding: 2em 3em 1.8em 3em;
+    //height: 1%;
+}
+#menu li {
+    float: left;
+    width: 25%;
+}
+#menu .item {
+    font-size: 1.5em;
+}
+#menu b.item {
+    color: #000;
+    font-weight: normal;
+}
+#menu a:visited {
+    color: #168;
+}
+#menu a:hover {
+    color: #000;
+}
+#menu .tips {
+    font-size: 0.857em;
+    padding: 0.5em 0;
+}
+#menu .tips b, #menu .tips span {
+    padding-right: 0.4em;
+}
+#menu .button {
+    padding: 0.4em 0;
+}
+        
+#tasklist {
+    width: 28%;
+    float:left;
+}
+#tasklist .size {
+    padding: 2em 2em 2em 3em;
+    border-right: 1px solid #ccc;
+}
+#tasklist ul, #chain ul {
+    padding: 0;
+    margin: 0.5em 0 0 -15px;
+    list-style: none;
+}
+#tasklist li, #chain li {
+    padding: 0.4em 0 0.4em 15px;
+}
+#tasklist li small {
+    font-size: 0.785em;
+    color: #999;
+}
+#tasklist .return {
+    font-size: 0.857em;
+    line-height: 1.2em;
+    padding-bottom: 0.6em;
+    font-style: italic;
+}
+#tasklist .done, #chain .done {
+    background: url('../images/taskdone.gif') no-repeat 0 0.5em;
+}
+#tasklist .stop, #chain .stop {
+    background: url('../images/taskstop.gif') no-repeat 0 0.6em;
+}
+#taskwin {
+    width: 72%;
+    float:left;
+    margin-right: -100%;
+}
+#taskwin .size {
+    margin-left: -1px;
+    padding: 2em 3em 2em 3em;
+    border-left: 1px solid #ccc;
+}
+.continuechain {
+    padding: 0.3em;
+    background: #1b0;
+    width: 9em;
+}
+.continuechain input {
+    width: 100%;
+}
+.stopchain {
+    padding: 0.3em;
+    background: #b00;
+    float: right;
+}
+.cancel {
+    padding: 0.3em;
+    background: #ccc;
+    float: right;
+}
+#chain {
+    padding: 2em 3em 1em 3em;
+}
+#chain ul .tips {
+    font-size: 0.785em;
+    color: #666;
+    padding-left: 2em;
+}
+#chain .chain {
+    margin-top: 1em;
+    margin-bottom: 2em;
+    border-collapse: collapse;
+}
+#chain .chain td {
+    padding: 0 0 0 35px;
+    color: #333;
+    text-align:center;
+}
+#chain .chain .dots small {
+    font-size: 0.785em;
+    line-height: 1em;
+    white-space: nowrap
+}
+#chain .chain img {
+    float: left;
+    margin-left: -35px;
+}
+#chain .chain td.wait {
+    background: url('../images/chain_line_wait.gif') repeat-x -3px 50%;
+}
+#chain .chain td.done {
+    background: url('../images/chain_line_done.gif') repeat-x -3px 50%;
+}
+#chain .chain .people {
+    font-size: 0.857em;
+}
+#chain .chain .people td {
+    vertical-align:top;
+    padding-top: 0.8em;
+    text-align: left;
+    padding-right: 15px;
+    padding-left: 10px;
+    line-height: 1em;
+}
+#chain .chain .people small {
+    font-size: 0.916em;
+    line-height: 1em;
+    color: #999;
+}
+
+.morefile, .deletefile, .add_morefile, .check_delete a {
+    text-decoration: none;
+    border-bottom: 1px dashed;
+    font-size: 0.785em;
+    line-height: 1em;
+    margin-left: 1em;
+}
+.addchain {
+    margin-top: -2em;
+    padding: 1em;
+    background: #1b0;
+    text-align:center;
+}
+.addchain input {
+    font-size: 1.1em;
+}
+
+.taskbad {
+    color: #b00;
+}
+.tasknorm {
+    color: #d80;
+}
+.taskgood {
+    color: #1b0;
+}
+.taskall {
+    color: #999;
+}
+.tasknew {
+    color: #000;
+}
+
+form {
+    padding: 0;
+    margin:0;
+}
+
+#morefile_block, #add_morefile_block {
+    display: none;
+}
+
+.ajax-loading {
+    overflow: auto;
+    padding: 20px 0;
+    background: url('../images/spinner.gif') no-repeat center;
+}
