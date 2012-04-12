@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 
 from django.db import models
@@ -134,3 +135,15 @@ class Task(models.Model):
         else:
             expended_days = None
         return expended_days
+
+
+class StaffProfile(models.Model):
+    """Профиль сотрудника."""
+    user = models.ForeignKey(User, unique=True)
+
+    post = models.TextField(max_length=45)
+
+    def __unicode__(self):
+        full_name = self.user.get_full_name()
+        return u"{post} {full_name}".format(full_name=full_name,
+                                            post=self.post)
