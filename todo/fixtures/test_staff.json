@@ -1,0 +1,132 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "alexander", 
+            "first_name": "\u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440", 
+            "last_name": "\u041c\u0430\u043a\u0435\u0434\u043e\u043d\u0441\u043a\u0438\u0439", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2012-04-12 08:22:22", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$30f17$af88cdea2ca96f2f251351c60f7220af5a15ccfc", 
+            "email": "alexander@test.com", 
+            "date_joined": "2012-04-12 08:18:44"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "kazimir", 
+            "first_name": "\u041a\u0430\u0437\u0438\u043c\u0438\u0440", 
+            "last_name": "\u041c\u0430\u043b\u0435\u0432\u0438\u0447", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-04-12 08:44:54", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$76e8a$5800eb4c035bdc9c9bdf8ec3ba860df878602e7a", 
+            "email": "", 
+            "date_joined": "2012-04-12 08:44:54"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "andy", 
+            "first_name": "\u042d\u043d\u0434\u0438", 
+            "last_name": "\u0423\u043e\u0440\u0445\u043e\u043b", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-04-12 08:46:23", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$9a5ea$a7a5a6eb25d7f6bb90d2941585168c4169e48d81", 
+            "email": "", 
+            "date_joined": "2012-04-12 08:46:23"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "ada", 
+            "first_name": "\u0410\u0434\u0430", 
+            "last_name": "\u041b\u0430\u0432\u043b\u0435\u0439\u0441", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-04-12 08:52:05", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a0533$9f823abcf3205a27bb526a4f727bd9d64a8b5217", 
+            "email": "", 
+            "date_joined": "2012-04-12 08:52:05"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "homer", 
+            "first_name": "\u0413\u043e\u043c\u0435\u0440", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-04-12 08:53:48", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$c8d98$7a0faea64a70c5f6883348de0e8a03e1257b98a1", 
+            "email": "", 
+            "date_joined": "2012-04-12 08:53:48"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "todo.staffprofile", 
+        "fields": {
+            "post": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c \u043f\u0440\u043e\u0435\u043a\u0442\u043e\u0432", 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "todo.staffprofile", 
+        "fields": {
+            "post": "\u0414\u0438\u0437\u0430\u0439\u043d\u0435\u0440", 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "todo.staffprofile", 
+        "fields": {
+            "post": "\u0414\u0438\u0437\u0430\u0439\u043d\u0435\u0440-\u0442\u0435\u0445\u043d\u043e\u043b\u043e\u0433", 
+            "user": 3
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "todo.staffprofile", 
+        "fields": {
+            "post": "\u041f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0441\u0442", 
+            "user": 4
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "todo.staffprofile", 
+        "fields": {
+            "post": "\u041a\u043e\u043d\u0442\u0435\u043d\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440", 
+            "user": 5
+        }
+    }
+]
