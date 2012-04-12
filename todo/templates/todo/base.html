@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}todo/css/todo.css" type="text/css" media="all" />
+    <title>TODO</title>
+</head>
+<body>
+    <div id="header">
+        <div id="user">
+            username
+            <a href="/user/logout"><img src="{{ STATIC_URL }}todo/images/exit.gif" alt="Выход"/></a>
+        </div>
+        <h1 id="logo"><a href="/"><img src="{{ STATIC_URL }}todo/images/logo.gif"/></a></h1>
+    </div>
+
+    <ul id="menu">
+        <li>
+            {% if place == 'tasks' %}
+            <b class="item">Задачи</b>
+            {% else %}
+            <a class="item" href="{% url todo_actual_tasks %}">Задачи</a>
+            {% endif %}
+        </li>
+        <li>
+            {% if place == 'chains' %}
+            <b class="item">Цепочки</b>
+            {% else %}
+            <a class="item" href="{% url todo_actual_chains %}">Цепочки</a>
+            {% endif %}
+            <div class="button"><form>
+            <input class="mainbutton" type="submit" value="Создать новую"/>
+            </form></div>
+        </li>
+        <li>
+            <a class="item" href="#">Сотрудники</a>
+        </li>
+        <br style="clear:both"/>
+    </ul>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body></html>
