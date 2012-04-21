@@ -43,8 +43,12 @@ class ChainTest(TestCase):
                             order=Task.FIRST_TASK + 3)
 
 
-class ChainWaitTest(TestCase):
+class ChainWaitTest(ChainTest):
     """Тестирует случай, когда цепочка ожидает начала работы."""
+    def setUp(self):
+        today = datetime.date.today()
+        chain_start_date = today - datetime.timedelta(days=1)
+        super(ChainWaitTest, self).setUp(chain_start_date)
 
 
 class ChainWork(TestCase):
