@@ -51,8 +51,12 @@ class ChainWaitTest(ChainTest):
         super(ChainWaitTest, self).setUp(chain_start_date)
 
 
-class ChainWork(TestCase):
+class ChainWorkTest(ChainTest):
     """Тестирует случай, когда цепочка выполняется."""
+    def setUp(self):
+        today = datetime.date.today()
+        chain_start_date = today + datetime.timedelta(days=1)
+        super(ChainWorkTest, self).setUp(chain_start_date)
 
 
 class ChainDoneInTimeTest(TestCase):
