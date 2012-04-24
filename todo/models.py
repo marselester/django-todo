@@ -15,6 +15,9 @@ class Chain(models.Model):
     owner = models.ForeignKey(User)
     archive = models.BooleanField(default=False)
 
+    # Default manager.
+    objects = models.Manager()
+
     def actual_status(self):
         """Определяет фактический статус цепочки."""
 
@@ -47,6 +50,9 @@ class Task(models.Model):
     chain = models.ForeignKey(Chain)
     order = models.IntegerField()
     archive = models.BooleanField(default=False)
+
+    # Default manager.
+    objects = models.Manager()
 
     def __unicode__(self):
         return self.task
