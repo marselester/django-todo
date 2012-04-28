@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+from todo.models import Task
 
 
+@login_required
 def actual_tasks(request):
     """Отображает список актуальных задач для исполнителя."""
-    return render(request, 'todo/task_list.html', {'place': 'tasks'})
+    user = request.user
+    actual_tasks = Task.objects.by_worker(user).actual()
+    return render(request, 'todo/task_list.html', {
+        'place': 'tasks',
+        'actual_tasks': actual_tasks,
+    })
 
 
 def task_detail(request, task_id):

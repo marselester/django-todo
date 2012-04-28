@@ -1,5 +1,23 @@
 {% extends "todo/two_columns.html" %}
 
 {% block left_column %}
-Актуальные задачи.
+<h6>Список задач:</h6>
+<ul>
+{% for task in actual_tasks %}
+    {% with task_status=task.actual_status %}
+    <li
+        {% if task_status == task.DONE_STATUS %}
+            class="done"
+        {% endif %}
+
+        {% if task_status == task.STOP_STATUS %}
+            class="stop"
+        {% endif %}
+    >
+        <a href="{{ task.get_absolute_url }}">{{ task.task }}</a><br/>
+        <small></small>
+    </li>
+    {% endwith %}
+{% endfor %}
+</ul>
 {% endblock %}

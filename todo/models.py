@@ -60,6 +60,10 @@ class Task(models.Model):
     def __unicode__(self):
         return self.task
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('todo_task_detail', (), {'task_id': self.pk})
+
     def actual_status(self):
         """Определяет фактический статус задачи."""
         if self.status in (self.DONE_STATUS, self.STOP_STATUS):
