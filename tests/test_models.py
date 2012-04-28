@@ -5,15 +5,13 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from todo.models import Chain, Task
+from . import factories
 
 
 class TaskTest(TestCase):
-    fixtures = ['test_staff.json']
-
     def setUp(self):
-        Task.objects.all().delete()
-        Chain.objects.all().delete()
-        # Сотрудники из test_staff.json
+        factories.make_fixtures()
+        # Сотрудники.
         self.manager = User.objects.get(username='alexander')
         self.designer = User.objects.get(username='kazimir')
         self.programmer = User.objects.get(username='ada')
