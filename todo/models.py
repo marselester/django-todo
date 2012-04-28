@@ -99,6 +99,10 @@ class Task(models.Model):
             start_date = prev_task.finish_date
         return start_date
 
+    def be_in_time(self):
+        """Определяет, успевает ли задача к дедлайну."""
+        return self.days_quantity_after_deadline() is None
+
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна.
 
