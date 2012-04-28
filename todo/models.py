@@ -3,6 +3,9 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from model_utils.managers import PassThroughManager
+
+from todo.managers import ChainQuerySet, TaskQuerySet
 
 
 class Chain(models.Model):
@@ -14,6 +17,9 @@ class Chain(models.Model):
     # Metadata.
     owner = models.ForeignKey(User)
     archive = models.BooleanField(default=False)
+
+    # Default manager.
+    objects = PassThroughManager.for_queryset_class(ChainQuerySet)()
 
     def actual_status(self):
         """Определяет фактический статус цепочки."""
@@ -48,15 +54,11 @@ class Task(models.Model):
     order = models.IntegerField()
     archive = models.BooleanField(default=False)
 
+    # Default manager.
+    objects = PassThroughManager.for_queryset_class(TaskQuerySet)()
+
     def __unicode__(self):
         return self.task
-
-    def save(self, *args, **kwargs):
-        """Сохраняет дату завершения задачи."""
-        if (self.actual_status() == self.DONE_STATUS and
-            self.finish_date is None):
-            self.finish_date = datetime.date.today()
-        super(Task, self).save(*args, **kwargs)
 
     def actual_status(self):
         """Определяет фактический статус задачи."""

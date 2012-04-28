@@ -5,15 +5,13 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from todo.models import Chain, Task
+from . import factories
 
 
 class TaskTest(TestCase):
-    fixtures = ['test_staff.json']
-
     def setUp(self):
-        Task.objects.all().delete()
-        Chain.objects.all().delete()
-        # Сотрудники из test_staff.json
+        factories.make_fixtures()
+        # Сотрудники.
         self.manager = User.objects.get(username='alexander')
         self.designer = User.objects.get(username='kazimir')
         self.programmer = User.objects.get(username='ada')
@@ -21,7 +19,7 @@ class TaskTest(TestCase):
 
 class ActualStatusTest(TaskTest):
     """Тестирует определение статуса задачи."""
-    def testFirstTaskWait(self):
+    def test_first_task_wait(self):
         """Тестирует статус WAIT у первой задачи.
 
         Задача стоит первой в цепочке и дата начала работы над цепочкой еще
@@ -38,7 +36,7 @@ class ActualStatusTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.actual_status(), Task.WAIT_STATUS)
 
-    def testPrevTaskNotDone(self):
+    def test_prev_task_not_done(self):
         """Тестирует статус WAIT, проверяя статус предыдущей задачи.
 
         Статус предыдущей задачи не должен быть DONE. Цепочка начала работать 1
@@ -62,7 +60,7 @@ class ActualStatusTest(TaskTest):
                                           order=Task.FIRST_TASK + 1)
         self.assertEqual(second_task.actual_status(), Task.WAIT_STATUS)
 
-    def testFirstTaskWork(self):
+    def test_first_task_work(self):
         """Тестирует статус WORK у первой задачи.
 
         Задача стоит первой в цепочке и наступила дата начала работы над
@@ -79,7 +77,7 @@ class ActualStatusTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.actual_status(), Task.WORK_STATUS)
 
-    def testPrevTaskDone(self):
+    def test_prev_task_done(self):
         """Тестирует статус WORK, проверяя статус предыдущей задачи.
 
         Статус предыдущей задачи должен быть DONE. Цепочка начала работать 2
@@ -106,7 +104,7 @@ class ActualStatusTest(TaskTest):
 
 class StartDateTest(TaskTest):
     """Тестирует определение даты начала работы над задачей."""
-    def testFirstTask(self):
+    def test_first_task(self):
         """Тестирует дату начала работы первой задачи.
 
         Дата начала первой задачи совпадает с датой начала цепочки. Это условие
@@ -122,7 +120,7 @@ class StartDateTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.start_date(), chain.start_date)
 
-    def testWait(self):
+    def test_wait(self):
         """Тестирует дату начала работы задачи со статусом WAIT.
 
         Дата начала совпадает с датой дедлайна предыдущей задачи (дедлайн
@@ -144,7 +142,7 @@ class StartDateTest(TaskTest):
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), first_task.deadline)
 
-    def testWork(self):
+    def test_work(self):
         """Тестирует дату начала работы задачи со статусом WORK.
 
         Дата начала совпадает с датой окончания предыдущей задачи (DONE). Это
@@ -166,7 +164,7 @@ class StartDateTest(TaskTest):
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), first_task.finish_date)
 
-    def testUnpredictable(self):
+    def test_unpredictable(self):
         """Тестирует непрогнозируемую дату начала работы задачи.
 
         Статус задачи WAIT, предыдущая задача превысила дедлайн. Предыдущая
@@ -190,7 +188,7 @@ class StartDateTest(TaskTest):
 
 class DeadlineDaysTest(TaskTest):
     """Тестирует определение количества дней до дедлайна и после него."""
-    def testBeforeDeadline(self):
+    def test_before_deadline(self):
         """Тестирует случай, когда дедлайн еще не наступил.
 
         Задача работает второй день, на выполнение отведено 3 дня.
@@ -206,7 +204,7 @@ class DeadlineDaysTest(TaskTest):
         self.assertEqual(first_task.remaining_days(), 1)
         self.assertEqual(first_task.days_quantity_after_deadline(), None)
 
-    def testAfterDeadline(self):
+    def test_after_deadline(self):
         """Тестирует случай, когда дедлайн просрочен.
 
         Задача работает 5 день, на выполнение отведено 3 дня.
@@ -225,7 +223,7 @@ class DeadlineDaysTest(TaskTest):
 
 class ExpendedDaysTest(TaskTest):
     """Тестирует определение количества дней, затраченных на задачу."""
-    def testWait(self):
+    def test_wait(self):
         """Тестирует случай, когда задача ожидает начала работы."""
         today = datetime.date.today()
         chain_start_date = today + datetime.timedelta(days=1)
@@ -237,7 +235,7 @@ class ExpendedDaysTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.expended_days(), 0)
 
-    def testWork(self):
+    def test_work(self):
         """Тестирует случай, когда задача работает."""
         today = datetime.date.today()
         chain_start_date = today - datetime.timedelta(days=4)
@@ -251,7 +249,7 @@ class ExpendedDaysTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.expended_days(), 5)
 
-    def testDone(self):
+    def test_done(self):
         """Тестирует случай, когда задача завершена."""
         today = datetime.date.today()
         chain_start_date = today - datetime.timedelta(days=1)
@@ -265,7 +263,7 @@ class ExpendedDaysTest(TaskTest):
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.expended_days(), 2)
 
-    def testStop(self):
+    def test_stop(self):
         """Тестирует случай, когда задача остановлена."""
         today = datetime.date.today()
         chain_start_date = today - datetime.timedelta(days=1)

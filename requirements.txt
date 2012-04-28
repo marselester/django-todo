@@ -1,0 +1,1 @@
+git+https://github.com/rbarrois/factory_boy.git#egg=factory_boy
