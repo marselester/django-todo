@@ -60,13 +60,6 @@ class Task(models.Model):
     def __unicode__(self):
         return self.task
 
-    def save(self, *args, **kwargs):
-        """Сохраняет дату завершения задачи."""
-        if (self.actual_status() == self.DONE_STATUS and
-            self.finish_date is None):
-            self.finish_date = datetime.date.today()
-        super(Task, self).save(*args, **kwargs)
-
     def actual_status(self):
         """Определяет фактический статус задачи."""
         if self.status in (self.DONE_STATUS, self.STOP_STATUS):
