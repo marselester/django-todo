@@ -9,4 +9,8 @@ setup(
     author_email='marselester@ya.ru',
     packages=['todo', ],
     include_package_data=True,
+    install_requires=[
+        'Django >= 1.3.1',
+        'django-model-utils',
+    ]
 )
