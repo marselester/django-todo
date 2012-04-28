@@ -22,7 +22,7 @@ class UserFactory(factory.DjangoModelFactory):
     first_name = factory.Sequence(lambda num: 'Имя{num}'.format(num=num))
     last_name = factory.Sequence(lambda num: 'Фамилия{num}'.format(num=num))
     email = factory.LazyAttribute(lambda obj: '%s@example.org' % obj.username)
-    is_staff = False
+    is_staff = True
     is_active = True
     is_superuser = False
     password = '123'
@@ -160,3 +160,127 @@ def make_fixtures():
         chain=chain,
         order=core.order + 1
     )
+
+    # Chain was completed in time.
+    chain = ChainFactory(
+        name='Chain was completed in time',
+        owner=manager,
+        start_date=today - datetime.timedelta(days=50)
+    )
+    # First task is design for 2 days.
+    design = TaskFactory(
+        worker=designer,
+        deadline=chain.start_date + datetime.timedelta(days=2),
+        chain=chain,
+        order=Task.FIRST_TASK,
+        status=Task.DONE_STATUS,
+    )
+    design.finish_date = design.deadline - datetime.timedelta(days=1)
+    design.save()
+    # Second task is layout for 2 days.
+    layout = TaskFactory(
+        worker=ui_engineer,
+        deadline=design.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=design.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    layout.finish_date = layout.deadline - datetime.timedelta(days=1)
+    layout.save()
+    # Third task is core for 2 days.
+    core = TaskFactory(
+        worker=web_app_developer,
+        deadline=layout.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=layout.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    core.finish_date = core.deadline - datetime.timedelta(days=1)
+    core.save()
+    # Fourth task is content for 2 days.
+    content = TaskFactory(
+        worker=content_manager,
+        deadline=core.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=core.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    content.finish_date = content.deadline - datetime.timedelta(days=1)
+    content.save()
+
+    # Chain is overdue.
+    chain = ChainFactory(
+        name='Chain is overdue',
+        owner=manager,
+        start_date=today - datetime.timedelta(days=666)
+    )
+    # First task is design for 2 days.
+    design = TaskFactory(
+        worker=designer,
+        deadline=chain.start_date + datetime.timedelta(days=2),
+        chain=chain,
+        order=Task.FIRST_TASK,
+        status=Task.DONE_STATUS,
+    )
+    design.finish_date = design.deadline - datetime.timedelta(days=1)
+    design.save()
+    # Second task is layout for 2 days.
+    layout = TaskFactory(
+        worker=ui_engineer,
+        deadline=design.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=design.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    layout.finish_date = layout.deadline - datetime.timedelta(days=1)
+    layout.save()
+    # Third task is core for 2 days.
+    core = TaskFactory(
+        worker=web_app_developer,
+        deadline=layout.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=layout.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    core.finish_date = core.deadline - datetime.timedelta(days=1)
+    core.save()
+    # Fourth task is content for 2 days.
+    content = TaskFactory(
+        worker=content_manager,
+        deadline=core.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=core.order + 1,
+        status=Task.DONE_STATUS,
+    )
+    content.finish_date = content.deadline
+    content.save()
+
+    # Chain was stopped.
+    chain = ChainFactory(
+        name='Chain was stopped',
+        owner=manager,
+        start_date=today - datetime.timedelta(days=2)
+    )
+    # First task is design for 5 days.
+    design = TaskFactory(
+        worker=designer,
+        deadline=chain.start_date + datetime.timedelta(days=5),
+        chain=chain,
+        order=Task.FIRST_TASK,
+        status=Task.STOP_STATUS,
+    )
+    # Second task is layout for 2 days.
+    layout = TaskFactory(
+        worker=ui_engineer,
+        deadline=design.deadline + datetime.timedelta(days=2),
+        chain=chain,
+        order=design.order + 1
+    )
+
+if __name__ == '__main__':
+    Task.objects.all().delete()
+    Chain.objects.all().delete()
+    StaffProfile.objects.all().delete()
+    User.objects.all().delete()
+
+    make_fixtures()
