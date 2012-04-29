@@ -323,6 +323,23 @@ class DaysToStartTest(TaskTest):
 
     def test_task_not_wait(self):
         """Задача не ожидает начала работы, а имеет статус WORK/DONE/STOP."""
-        self.assertIsNone()
-        self.assertIsNone()
-        self.assertIsNone()
+        today = datetime.date.today()
+        chain = factories.ChainFactory(
+            start_date=today - datetime.timedelta(days=3)
+        )
+        task = factories.TaskFactory(
+            deadline=chain.start_date + datetime.timedelta(days=5),
+            chain=chain,
+            order=Task.FIRST_TASK
+        )
+        # WORK.
+        self.assertIsNone(task.days_to_start())
+
+        # STOP.
+        task.status = task.STOP_STATUS
+        self.assertIsNone(task.days_to_start())
+
+        # DONE.
+        task.status = task.DONE_STATUS
+        task.finish_date = today
+        self.assertIsNone(task.days_to_start())
