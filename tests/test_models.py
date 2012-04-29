@@ -305,7 +305,21 @@ class DaysToStartTest(TaskTest):
 
     def test_prev_task_overdue(self):
         """Предыдущая задача превысила дедлайн."""
-        self.assertIsNone()
+        today = datetime.date.today()
+        chain = factories.ChainFactory(
+            start_date=today - datetime.timedelta(days=7)
+        )
+        design = factories.TaskFactory(
+            deadline=chain.start_date + datetime.timedelta(days=5),
+            chain=chain,
+            order=Task.FIRST_TASK
+        )
+        layout = factories.TaskFactory(
+            deadline=design.deadline + datetime.timedelta(days=5),
+            chain=chain,
+            order=Task.FIRST_TASK + 1
+        )
+        self.assertIsNone(layout.days_to_start())
 
     def test_task_not_wait(self):
         """Задача не ожидает начала работы, а имеет статус WORK/DONE/STOP."""
