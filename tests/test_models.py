@@ -275,3 +275,24 @@ class ExpendedDaysTest(TaskTest):
                                          status=Task.STOP_STATUS,
                                          order=Task.FIRST_TASK)
         self.assertEqual(first_task.expended_days(), None)
+
+
+class DaysToStartTest(TaskTest):
+    """Тестирует определение количества дней, оставшихся до начала задачи."""
+    def test_start_date_greater_than_today_to_one_day(self):
+        """Дата начала больше текущей даты на один день."""
+        self.assertEqual(0)
+
+    def test_today_equal_start_date(self):
+        """Текущая дата совпадает с датой начала работы над задачей."""
+        self.assertNone()
+
+    def test_prev_task_overdue(self):
+        """Предыдущая задача превысила дедлайн."""
+        self.assertNone()
+
+    def test_task_not_wait(self):
+        """Задача не ожидает начала работы, а имеет статус WORK/DONE/STOP."""
+        self.assertNone()
+        self.assertNone()
+        self.assertNone()
