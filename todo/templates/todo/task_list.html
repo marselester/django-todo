@@ -18,7 +18,13 @@
 
         {% if task_status == task.WAIT_STATUS %}
             {% with days_to_start=task.days_to_start %}
-            <small>начнется через <b class="tasknorm">{{ days_to_start }}</b></small>
+            <small>
+            {% if days_to_start == 0 %}
+                начнется <b class="tasknorm">завтра</b>
+            {% else %}
+                начнется через <b class="tasknorm">{{ days_to_start }}</b>
+            {% endif %}
+            </small>
             {% endwith %}
         {% endif %}
 
