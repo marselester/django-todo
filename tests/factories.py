@@ -95,7 +95,7 @@ def make_fixtures():
     chain = ChainFactory(
         name='Chain waits',
         owner=manager,
-        start_date=today + datetime.timedelta(days=2)
+        start_date=today + datetime.timedelta(days=1)
     )
     # First task is design for 5 days.
     design = TaskFactory(
@@ -132,10 +132,10 @@ def make_fixtures():
         owner=manager,
         start_date=today - datetime.timedelta(days=2)
     )
-    # First task is design for 5 days.
+    # First task is design for 3 days.
     design = TaskFactory(
         worker=designer,
-        deadline=chain.start_date + datetime.timedelta(days=5),
+        deadline=chain.start_date + datetime.timedelta(days=3),
         chain=chain,
         order=Task.FIRST_TASK
     )

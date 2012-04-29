@@ -30,7 +30,13 @@
 
         {% if task_status == task.WORK_STATUS %}
             {% if task.be_in_time %}
-                <small>осталось <b class="taskgood">{{ before_deadline }}</b></small>
+                <small>
+                {% if before_deadline == 0 %}
+                    <b class="taskgood">сегодня последний день</b>
+                {% else %}
+                    осталось <b class="taskgood">{{ before_deadline }}</b>
+                {% endif %}
+                </small>
             {% else %}
                 <small><b class="taskbad">просрочено на {{ after_deadline }}</b></small>
             {% endif %}
