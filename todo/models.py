@@ -103,6 +103,22 @@ class Task(models.Model):
         """Определяет, успевает ли задача к дедлайну."""
         return self.days_quantity_after_deadline() is None
 
+    def days_to_start(self):
+        """Определяет количество дней, оставшихся до начала работы над задачей.
+
+        Например, задача ограничена сроком [26; 29) и сейчас 23 число.
+        До начала работы осталось 2 полных дня, так как текущий день
+        не учитывается.
+        """
+        start_date = self.start_date()
+        today = datetime.date.today()
+        if start_date is not None and start_date > today:
+            time_to_start = start_date - today - datetime.timedelta(days=1)
+            days_to_start = time_to_start.days
+        else:
+            days_to_start = None
+        return days_to_start
+
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна.
 
