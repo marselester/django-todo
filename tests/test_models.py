@@ -294,7 +294,14 @@ class DaysToStartTest(TaskTest):
 
     def test_today_equal_start_date(self):
         """Текущая дата совпадает с датой начала работы над задачей."""
-        self.assertIsNone()
+        today = datetime.date.today()
+        chain = factories.ChainFactory(start_date=today)
+        task = factories.TaskFactory(
+            deadline=chain.start_date + datetime.timedelta(days=5),
+            chain=chain,
+            order=Task.FIRST_TASK
+        )
+        self.assertIsNone(task.days_to_start())
 
     def test_prev_task_overdue(self):
         """Предыдущая задача превысила дедлайн."""
