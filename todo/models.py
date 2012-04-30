@@ -137,12 +137,18 @@ class Task(models.Model):
 
     def days_quantity_after_deadline(self):
         """Определяет количество дней, на которые просрочена задача."""
+        days_quantity = None
         today = datetime.date.today()
-        if today >= self.deadline:
+        if self.actual_status() == self.DONE_STATUS:
+            # Задача завершена с превышением дедлайна.
+            if self.finish_date >= self.deadline:
+                time_after_deadline = (self.finish_date - self.deadline
+                                       + datetime.timedelta(1))
+                days_quantity = time_after_deadline.days
+        # Задача со статусом WAIT/WORK/STOP превысила дедлайн.
+        elif today >= self.deadline:
             time_after_deadline = today - self.deadline + datetime.timedelta(1)
             days_quantity = time_after_deadline.days
-        else:
-            days_quantity = None
         return days_quantity
 
     def expended_days(self):
