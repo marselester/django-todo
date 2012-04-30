@@ -16,31 +16,43 @@
     >
         <a href="{{ task.get_absolute_url }}">{{ task.task }}</a><br/>
 
+        <small>
         {% if task_status == task.WAIT_STATUS %}
-            {% with days_to_start=task.days_to_start %}
-            <small>
-            {% if days_to_start == 0 %}
-                начнется <b class="tasknorm">завтра</b>
+            {% if task.be_in_time %}
+                {% with days_to_start=task.days_to_start %}
+                {% if days_to_start == None %}
+                    <b class="tasknorm">дата начала не прогнозируема</b>
+                {% endif %}
+
+                {% if days_to_start == 0 %}
+                    начнется <b class="tasknorm">завтра</b>
+                {% endif %}
+
+                {% if days_to_start > 0 %}
+                    начнется через <b class="tasknorm">{{ days_to_start }}</b>
+                {% endif %}
+                {% endwith %}
             {% else %}
-                начнется через <b class="tasknorm">{{ days_to_start }}</b>
+                <b class="taskbad">просрочено на {{ after_deadline }}</b>
             {% endif %}
-            </small>
-            {% endwith %}
         {% endif %}
 
-        {% if task_status == task.WORK_STATUS %}
+        {% if task_status == task.WORK_STATUS or task_status == task.STOP_STATUS %}
             {% if task.be_in_time %}
-                <small>
                 {% if before_deadline == 0 %}
                     <b class="taskgood">сегодня последний день</b>
                 {% else %}
                     осталось <b class="taskgood">{{ before_deadline }}</b>
                 {% endif %}
-                </small>
             {% else %}
-                <small><b class="taskbad">просрочено на {{ after_deadline }}</b></small>
+                <b class="taskbad">просрочено на {{ after_deadline }}</b>
             {% endif %}
         {% endif %}
+
+        {% if task_status == task.DONE_STATUS and not task.be_in_time %}
+            <b class="taskbad">просрочено на {{ after_deadline }}</b>
+        {% endif %}
+        </small>
     </li>
     {% endwith %}
 {% endfor %}
