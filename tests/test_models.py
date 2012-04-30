@@ -220,6 +220,21 @@ class DeadlineDaysTest(TaskTest):
         self.assertEqual(first_task.days_quantity_after_deadline(), 2)
         self.assertEqual(first_task.remaining_days(), None)
 
+    def task_wait_overdue(self):
+        """Просрочен дедлайн у ожидающей задачи из-за предыдущей задачи."""
+
+    def task_work_overdue(self):
+        """Работающая задача превысила дедлайн."""
+
+    def task_done_overdue(self):
+        """Задача выполнена с превышением дедлайна."""
+
+    def task_stop_overdue(self):
+        """Просрочен дедлайн у остановленной задачи.
+
+        Владелец цепочки не решил проблему остановки задачи.
+        """
+
 
 class ExpendedDaysTest(TaskTest):
     """Тестирует определение количества дней, затраченных на задачу."""
