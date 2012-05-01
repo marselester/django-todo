@@ -32,8 +32,7 @@ class ActualStatusTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.actual_status(), Task.WAIT_STATUS)
 
     def test_prev_task_not_done(self):
@@ -50,14 +49,12 @@ class ActualStatusTest(TaskTest):
                                      owner=self.manager)
         deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
-                            deadline=deadline_first_task,
-                            order=Task.FIRST_TASK)
+                            deadline=deadline_first_task)
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
                                           deadline=deadline_second_task,
-                                          chain=chain,
-                                          order=Task.FIRST_TASK + 1)
+                                          chain=chain)
         self.assertEqual(second_task.actual_status(), Task.WAIT_STATUS)
 
     def test_first_task_work(self):
@@ -73,8 +70,7 @@ class ActualStatusTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.actual_status(), Task.WORK_STATUS)
 
     def test_prev_task_done(self):
@@ -92,13 +88,12 @@ class ActualStatusTest(TaskTest):
         deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
                             deadline=deadline_first_task, finish_date=today,
-                            order=Task.FIRST_TASK, status=Task.DONE_STATUS)
+                            status=Task.DONE_STATUS)
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         second_task = Task.objects.create(worker=self.programmer,
                                           task='Programming',
                                           deadline=deadline_second_task,
-                                          chain=chain,
-                                          order=Task.FIRST_TASK + 1)
+                                          chain=chain)
         self.assertEqual(second_task.actual_status(), Task.WORK_STATUS)
 
 
@@ -116,8 +111,7 @@ class StartDateTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.start_date(), chain.start_date)
 
     def test_wait(self):
@@ -132,12 +126,10 @@ class StartDateTest(TaskTest):
                                      owner=self.manager)
         deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
-                            deadline=deadline_first_task,
-                            order=Task.FIRST_TASK)
+                            deadline=deadline_first_task)
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         Task.objects.create(worker=self.programmer, task='Programming',
-                            deadline=deadline_second_task, chain=chain,
-                            order=Task.FIRST_TASK + 1)
+                            deadline=deadline_second_task, chain=chain)
         first_task = Task.objects.get(task='Design')
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), first_task.deadline)
@@ -155,11 +147,10 @@ class StartDateTest(TaskTest):
         deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
                             deadline=deadline_first_task, finish_date=today,
-                            order=Task.FIRST_TASK, status=Task.DONE_STATUS)
+                            status=Task.DONE_STATUS)
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         Task.objects.create(worker=self.programmer, task='Programming',
-                            deadline=deadline_second_task, chain=chain,
-                            order=Task.FIRST_TASK + 1)
+                            deadline=deadline_second_task, chain=chain)
         first_task = Task.objects.get(task='Design')
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), first_task.finish_date)
@@ -176,12 +167,10 @@ class StartDateTest(TaskTest):
                                      owner=self.manager)
         deadline_first_task = chain_start_date + datetime.timedelta(days=3)
         Task.objects.create(worker=self.designer, task='Design', chain=chain,
-                            deadline=deadline_first_task,
-                            order=Task.FIRST_TASK)
+                            deadline=deadline_first_task)
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         Task.objects.create(worker=self.programmer, task='Programming',
-                            deadline=deadline_second_task, chain=chain,
-                            order=Task.FIRST_TASK + 1)
+                            deadline=deadline_second_task, chain=chain)
         second_task = Task.objects.get(task='Programming')
         self.assertEqual(second_task.start_date(), None)
 
@@ -199,8 +188,7 @@ class DeadlineDaysTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.remaining_days(), 1)
         self.assertEqual(first_task.days_quantity_after_deadline(), None)
 
@@ -215,13 +203,15 @@ class DeadlineDaysTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.days_quantity_after_deadline(), 2)
         self.assertEqual(first_task.remaining_days(), None)
 
     def task_wait_overdue(self):
-        """Просрочен дедлайн у ожидающей задачи из-за предыдущей задачи."""
+        """Просрочен дедлайн у ожидающей задачи из-за предыдущей задачи.
+
+        Предыдущая задача превысила свой дедлайн и дедлайн текущей задачи.
+        """
 
     def task_work_overdue(self):
         """Работающая задача превысила дедлайн."""
@@ -246,8 +236,7 @@ class ExpendedDaysTest(TaskTest):
                                      owner=self.manager)
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
-                                         deadline=deadline, chain=chain,
-                                         order=Task.FIRST_TASK)
+                                         deadline=deadline, chain=chain)
         self.assertEqual(first_task.expended_days(), 0)
 
     def test_work(self):
@@ -260,8 +249,7 @@ class ExpendedDaysTest(TaskTest):
         first_task = Task.objects.create(worker=self.designer, task='Design',
                                          deadline=deadline, chain=chain,
                                          status=Task.DONE_STATUS,
-                                         finish_date=today,
-                                         order=Task.FIRST_TASK)
+                                         finish_date=today)
         self.assertEqual(first_task.expended_days(), 5)
 
     def test_done(self):
@@ -274,8 +262,7 @@ class ExpendedDaysTest(TaskTest):
         first_task = Task.objects.create(worker=self.designer, task='Design',
                                          deadline=deadline, chain=chain,
                                          status=Task.DONE_STATUS,
-                                         finish_date=today,
-                                         order=Task.FIRST_TASK)
+                                         finish_date=today)
         self.assertEqual(first_task.expended_days(), 2)
 
     def test_stop(self):
@@ -287,8 +274,7 @@ class ExpendedDaysTest(TaskTest):
         deadline = chain_start_date + datetime.timedelta(days=3)
         first_task = Task.objects.create(worker=self.designer, task='Design',
                                          deadline=deadline, chain=chain,
-                                         status=Task.STOP_STATUS,
-                                         order=Task.FIRST_TASK)
+                                         status=Task.STOP_STATUS)
         self.assertEqual(first_task.expended_days(), None)
 
 
@@ -302,8 +288,7 @@ class DaysToStartTest(TaskTest):
         )
         task = factories.TaskFactory(
             deadline=chain.start_date + datetime.timedelta(days=5),
-            chain=chain,
-            order=Task.FIRST_TASK
+            chain=chain
         )
         self.assertEqual(task.days_to_start(), 0)
 
@@ -313,8 +298,7 @@ class DaysToStartTest(TaskTest):
         chain = factories.ChainFactory(start_date=today)
         task = factories.TaskFactory(
             deadline=chain.start_date + datetime.timedelta(days=5),
-            chain=chain,
-            order=Task.FIRST_TASK
+            chain=chain
         )
         self.assertIsNone(task.days_to_start())
 
@@ -326,13 +310,11 @@ class DaysToStartTest(TaskTest):
         )
         design = factories.TaskFactory(
             deadline=chain.start_date + datetime.timedelta(days=5),
-            chain=chain,
-            order=Task.FIRST_TASK
+            chain=chain
         )
         layout = factories.TaskFactory(
             deadline=design.deadline + datetime.timedelta(days=5),
-            chain=chain,
-            order=Task.FIRST_TASK + 1
+            chain=chain
         )
         self.assertIsNone(layout.days_to_start())
 
@@ -344,8 +326,7 @@ class DaysToStartTest(TaskTest):
         )
         task = factories.TaskFactory(
             deadline=chain.start_date + datetime.timedelta(days=5),
-            chain=chain,
-            order=Task.FIRST_TASK
+            chain=chain
         )
         # WORK.
         self.assertIsNone(task.days_to_start())
