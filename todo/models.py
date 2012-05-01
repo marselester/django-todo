@@ -27,6 +27,17 @@ class Chain(models.Model):
     def deadline(self):
         """Определяет дедлайн цепочки."""
 
+    def remaining_days(self):
+        """Определяет количество дней, оставшихся до дедлайна последней задачи.
+        """
+
+    def days_quantity_after_deadline(self):
+        """Определяет количество дней, на которые просрочена последняя задача.
+        """
+
+    def expended_days(self):
+        """Определяет количество дней, затраченных на цепочку."""
+
 
 class Task(models.Model):
     """Задача."""
