@@ -60,6 +60,16 @@ class Task(models.Model):
     def __unicode__(self):
         return self.task
 
+    def save(self, *args, **kwargs):
+        # Расчитывает порядковый номер у новой задачи.
+        if not self.pk:
+            try:
+                last_task = _last_task_in_chain(self.chain)
+                self.order = last_task.order + 1
+            except self.DoesNotExist:
+                self.order = self.FIRST_TASK
+        super(Task, self).save(*args, **kwargs)
+
     @models.permalink
     def get_absolute_url(self):
         return ('todo_task_detail', (), {'task_id': self.pk})
@@ -165,6 +175,11 @@ class Task(models.Model):
         else:
             expended_days = None
         return expended_days
+
+
+def _last_task_in_chain(chain):
+    """Возвращает последнуюю задачу из цепочки."""
+    return Task.objects.filter(chain=chain).latest('order')
 
 
 def _prev_task(task):
