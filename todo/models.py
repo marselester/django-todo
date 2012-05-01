@@ -73,8 +73,7 @@ class Task(models.Model):
                 return self.WAIT_STATUS
             else:
                 return self.WORK_STATUS
-        order_prev_task = self.order - 1
-        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        prev_task = _prev_task(self)
         if prev_task.status == self.DONE_STATUS:
             return self.WORK_STATUS
         else:
@@ -85,8 +84,7 @@ class Task(models.Model):
         # Для первой задачи равна дате начала работы над цепочкой.
         if self.order == self.FIRST_TASK:
             return self.chain.start_date
-        order_prev_task = self.order - 1
-        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        prev_task = _prev_task(self)
         # Для статуса WAIT равна дедлайну предыдущей задачи. Если дедлайн
         # просрочен, дата начала задачи не прогнозируема.
         # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
@@ -167,6 +165,15 @@ class Task(models.Model):
         else:
             expended_days = None
         return expended_days
+
+
+def _prev_task(task):
+    """Возвращает предыдущую задачу."""
+    if task.order < Task.FIRST_TASK:
+        raise Task.DoesNotExist
+    order_prev_task = task.order - 1
+    prev_task = Task.objects.get(chain=task.chain, order=order_prev_task)
+    return prev_task
 
 
 class StaffProfile(models.Model):
