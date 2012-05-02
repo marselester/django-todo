@@ -14,7 +14,13 @@
             class="stop"
         {% endif %}
     >
-        <a href="{{ task.get_absolute_url }}">{{ task.task }}</a><br/>
+        {% if current_task != task %}
+            <a href="{{ task.get_absolute_url }}">{{ task.task }}</a>
+        {% else %}
+            <b>{{ task.task }}</b>
+        {% endif %}
+
+        <br/>
 
         <small>
         {% if task_status == task.WAIT_STATUS %}

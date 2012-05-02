@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from todo.models import Task
@@ -16,9 +16,18 @@ def actual_tasks(request):
     })
 
 
+@login_required
 def task_detail(request, task_id):
     """Отображает описание задачи для исполнителя."""
-    return render(request, 'todo/task_detail.html')
+    task = get_object_or_404(Task, pk=task_id)
+    user = request.user
+    if task.worker != user:
+        return render(request, 'todo/error.html')
+    actual_tasks = Task.objects.by_worker(user).actual()
+    return render(request, 'todo/task_detail.html', {
+        'current_task': task,
+        'actual_tasks': actual_tasks,
+    })
 
 
 def task_archive(request):
