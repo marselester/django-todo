@@ -187,6 +187,15 @@ class Task(models.Model):
             expended_days = None
         return expended_days
 
+    def duration(self):
+        """Определяет количество дней, выделенных на выполнение задачи."""
+        if self.order == self.FIRST_TASK:
+            duration = self.deadline - self.chain.start_date
+        else:
+            prev_task = _prev_task(self)
+            duration = self.deadline - prev_task.deadline
+        return duration.days
+
 
 def _prev_task(task):
     """Возвращает предыдущую задачу."""
