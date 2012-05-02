@@ -339,3 +339,31 @@ class DaysToStartTest(TaskTest):
         task.status = task.DONE_STATUS
         task.finish_date = today
         self.assertIsNone(task.days_to_start())
+
+
+class DurationTest(TestCase):
+    """Тестирует определение количества дней, выделенных на выполнение задачи.
+    """
+    def setUp(self):
+        """Создает две задачи. Первой выделено 3 дня, второй 2 дня.
+
+        Например, первая задача ограничена сроком [2; 5), вторая -- [5; 7)
+        """
+        today = datetime.date.today()
+        chain = factories.ChainFactory(start_date=today)
+        self.first_task = factories.TaskFactory(
+            deadline=chain.start_date + datetime.timedelta(days=3),
+            chain=chain
+        )
+        self.second_task = factories.TaskFactory(
+            deadline=self.first_task.deadline + datetime.timedelta(days=2),
+            chain=chain
+        )
+
+    def test_first_task_in_chain(self):
+        """Задача стоит первой в цепочке."""
+        self.assertEqual(self.first_task.duration(), 3)
+
+    def test_second_task_in_chain(self):
+        """Задача стоит второй в цепочке."""
+        self.assertEqual(self.second_task.duration(), 2)
