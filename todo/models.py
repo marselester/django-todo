@@ -108,14 +108,15 @@ class Task(models.Model):
         prev_task = _prev_task(self)
         # Для статуса WAIT равна дедлайну предыдущей задачи. Если дедлайн
         # просрочен, дата начала задачи не прогнозируема.
-        # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
+        # Для статусов WORK, DONE, STOP равна следующей дате, после окончания
+        # предыдущей задачи.
         if self.actual_status() == self.WAIT_STATUS:
             if prev_task.deadline > datetime.date.today():
                 start_date = prev_task.deadline
             else:
                 start_date = None
         else:
-            start_date = prev_task.finish_date
+            start_date = prev_task.finish_date + datetime.timedelta(days=1)
         return start_date
 
     def be_in_time(self):

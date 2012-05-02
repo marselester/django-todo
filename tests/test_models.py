@@ -137,8 +137,9 @@ class StartDateTest(TaskTest):
     def test_work(self):
         """Тестирует дату начала работы задачи со статусом WORK.
 
-        Дата начала совпадает с датой окончания предыдущей задачи (DONE). Это
-        условие верно и для задач со статусом DONE или STOP.
+        Дата начала задачи наступает на следующий день после окончания
+        предыдущей задачи (DONE). Это условие верно и для задач со статусом
+        DONE или STOP.
         """
         today = datetime.date.today()
         chain_start_date = today - datetime.timedelta(days=2)
@@ -151,9 +152,9 @@ class StartDateTest(TaskTest):
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         Task.objects.create(worker=self.programmer, task='Programming',
                             deadline=deadline_second_task, chain=chain)
-        first_task = Task.objects.get(task='Design')
-        second_task = Task.objects.get(task='Programming')
-        self.assertEqual(second_task.start_date(), first_task.finish_date)
+        design_finish = Task.objects.get(task='Design').finish_date
+        prog_start = Task.objects.get(task='Programming').start_date()
+        self.assertEqual(prog_start, design_finish + datetime.timedelta(1))
 
     def test_unpredictable(self):
         """Тестирует непрогнозируемую дату начала работы задачи.
