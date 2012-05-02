@@ -95,35 +95,31 @@ def make_fixtures():
     chain = ChainFactory(
         name='Chain waits',
         owner=manager,
-        start_date=today + datetime.timedelta(days=2)
+        start_date=today + datetime.timedelta(days=1)
     )
     # First task is design for 5 days.
     design = TaskFactory(
         worker=designer,
         deadline=chain.start_date + datetime.timedelta(days=5),
-        chain=chain,
-        order=Task.FIRST_TASK
+        chain=chain
     )
     # Second task is layout for 2 days.
     layout = TaskFactory(
         worker=ui_engineer,
         deadline=design.deadline + datetime.timedelta(days=2),
-        chain=chain,
-        order=design.order + 1
+        chain=chain
     )
     # Third task is core for 4 days.
     core = TaskFactory(
         worker=web_app_developer,
         deadline=layout.deadline + datetime.timedelta(days=4),
-        chain=chain,
-        order=layout.order + 1
+        chain=chain
     )
     # Fourth task is content for 1 day.
     TaskFactory(
         worker=content_manager,
         deadline=core.deadline + datetime.timedelta(days=1),
-        chain=chain,
-        order=core.order + 1
+        chain=chain
     )
 
     # Chain works 3 days.
@@ -132,33 +128,29 @@ def make_fixtures():
         owner=manager,
         start_date=today - datetime.timedelta(days=2)
     )
-    # First task is design for 5 days.
+    # First task is design for 3 days.
     design = TaskFactory(
         worker=designer,
-        deadline=chain.start_date + datetime.timedelta(days=5),
-        chain=chain,
-        order=Task.FIRST_TASK
+        deadline=chain.start_date + datetime.timedelta(days=3),
+        chain=chain
     )
     # Second task is layout for 2 days.
     layout = TaskFactory(
         worker=ui_engineer,
         deadline=design.deadline + datetime.timedelta(days=2),
-        chain=chain,
-        order=design.order + 1
+        chain=chain
     )
     # Third task is core for 4 days.
     core = TaskFactory(
         worker=web_app_developer,
         deadline=layout.deadline + datetime.timedelta(days=4),
-        chain=chain,
-        order=layout.order + 1
+        chain=chain
     )
     # Fourth task is content for 1 day.
     TaskFactory(
         worker=content_manager,
         deadline=core.deadline + datetime.timedelta(days=1),
-        chain=chain,
-        order=core.order + 1
+        chain=chain
     )
 
     # Chain was completed in time.
@@ -172,7 +164,6 @@ def make_fixtures():
         worker=designer,
         deadline=chain.start_date + datetime.timedelta(days=2),
         chain=chain,
-        order=Task.FIRST_TASK,
         status=Task.DONE_STATUS,
     )
     design.finish_date = design.deadline - datetime.timedelta(days=1)
@@ -182,7 +173,6 @@ def make_fixtures():
         worker=ui_engineer,
         deadline=design.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=design.order + 1,
         status=Task.DONE_STATUS,
     )
     layout.finish_date = layout.deadline - datetime.timedelta(days=1)
@@ -192,7 +182,6 @@ def make_fixtures():
         worker=web_app_developer,
         deadline=layout.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=layout.order + 1,
         status=Task.DONE_STATUS,
     )
     core.finish_date = core.deadline - datetime.timedelta(days=1)
@@ -202,7 +191,6 @@ def make_fixtures():
         worker=content_manager,
         deadline=core.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=core.order + 1,
         status=Task.DONE_STATUS,
     )
     content.finish_date = content.deadline - datetime.timedelta(days=1)
@@ -219,7 +207,6 @@ def make_fixtures():
         worker=designer,
         deadline=chain.start_date + datetime.timedelta(days=2),
         chain=chain,
-        order=Task.FIRST_TASK,
         status=Task.DONE_STATUS,
     )
     design.finish_date = design.deadline - datetime.timedelta(days=1)
@@ -229,7 +216,6 @@ def make_fixtures():
         worker=ui_engineer,
         deadline=design.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=design.order + 1,
         status=Task.DONE_STATUS,
     )
     layout.finish_date = layout.deadline - datetime.timedelta(days=1)
@@ -239,7 +225,6 @@ def make_fixtures():
         worker=web_app_developer,
         deadline=layout.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=layout.order + 1,
         status=Task.DONE_STATUS,
     )
     core.finish_date = core.deadline - datetime.timedelta(days=1)
@@ -249,7 +234,6 @@ def make_fixtures():
         worker=content_manager,
         deadline=core.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=core.order + 1,
         status=Task.DONE_STATUS,
     )
     content.finish_date = content.deadline
@@ -266,7 +250,6 @@ def make_fixtures():
         worker=designer,
         deadline=chain.start_date + datetime.timedelta(days=5),
         chain=chain,
-        order=Task.FIRST_TASK,
         status=Task.STOP_STATUS,
     )
     # Second task is layout for 2 days.
@@ -274,7 +257,6 @@ def make_fixtures():
         worker=ui_engineer,
         deadline=design.deadline + datetime.timedelta(days=2),
         chain=chain,
-        order=design.order + 1
     )
 
 if __name__ == '__main__':

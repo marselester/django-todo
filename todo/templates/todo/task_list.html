@@ -1,5 +1,66 @@
 {% extends "todo/two_columns.html" %}
 
 {% block left_column %}
-Актуальные задачи.
+<h6>Список задач:</h6>
+<ul>
+{% for task in actual_tasks %}
+    {% with task_status=task.actual_status before_deadline=task.remaining_days after_deadline=task.days_quantity_after_deadline %}
+    <li
+        {% if task_status == task.DONE_STATUS %}
+            class="done"
+        {% endif %}
+
+        {% if task_status == task.STOP_STATUS %}
+            class="stop"
+        {% endif %}
+    >
+        {% if current_task != task %}
+            <a href="{{ task.get_absolute_url }}">{{ task.task }}</a>
+        {% else %}
+            <b>{{ task.task }}</b>
+        {% endif %}
+
+        <br/>
+
+        <small>
+        {% if task_status == task.WAIT_STATUS %}
+            {% if task.be_in_time %}
+                {% with days_to_start=task.days_to_start %}
+                {% if days_to_start == None %}
+                    <b class="tasknorm">дата начала не прогнозируема</b>
+                {% endif %}
+
+                {% if days_to_start == 0 %}
+                    начнется <b class="tasknorm">завтра</b>
+                {% endif %}
+
+                {% if days_to_start > 0 %}
+                    начнется через <b class="tasknorm">{{ days_to_start }}</b>
+                {% endif %}
+                {% endwith %}
+            {% else %}
+                <b class="taskbad">просрочено на {{ after_deadline }}</b>
+            {% endif %}
+        {% endif %}
+
+        {% if task_status == task.WORK_STATUS or task_status == task.STOP_STATUS %}
+            {% if task.be_in_time %}
+                {% if before_deadline == 0 %}
+                    <b class="taskgood">сегодня последний день</b>
+                {% else %}
+                    осталось <b class="taskgood">{{ before_deadline }}</b>
+                {% endif %}
+            {% else %}
+                <b class="taskbad">просрочено на {{ after_deadline }}</b>
+            {% endif %}
+        {% endif %}
+
+        {% if task_status == task.DONE_STATUS and not task.be_in_time %}
+            <b class="taskbad">просрочено на {{ after_deadline }}</b>
+        {% endif %}
+        </small>
+    </li>
+    {% endwith %}
+{% endfor %}
+</ul>
 {% endblock %}

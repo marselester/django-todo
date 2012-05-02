@@ -27,6 +27,17 @@ class Chain(models.Model):
     def deadline(self):
         """Определяет дедлайн цепочки."""
 
+    def remaining_days(self):
+        """Определяет количество дней, оставшихся до дедлайна последней задачи.
+        """
+
+    def days_quantity_after_deadline(self):
+        """Определяет количество дней, на которые просрочена последняя задача.
+        """
+
+    def expended_days(self):
+        """Определяет количество дней, затраченных на цепочку."""
+
 
 class Task(models.Model):
     """Задача."""
@@ -60,6 +71,20 @@ class Task(models.Model):
     def __unicode__(self):
         return self.task
 
+    def save(self, *args, **kwargs):
+        # Расчитывает порядковый номер у новой задачи.
+        if not self.pk:
+            try:
+                last_task = Task.objects.last_task_in_chain(self.chain)
+                self.order = last_task.order + 1
+            except self.DoesNotExist:
+                self.order = self.FIRST_TASK
+        super(Task, self).save(*args, **kwargs)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('todo_task_detail', (), {'task_id': self.pk})
+
     def actual_status(self):
         """Определяет фактический статус задачи."""
         if self.status in (self.DONE_STATUS, self.STOP_STATUS):
@@ -69,8 +94,7 @@ class Task(models.Model):
                 return self.WAIT_STATUS
             else:
                 return self.WORK_STATUS
-        order_prev_task = self.order - 1
-        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        prev_task = _prev_task(self)
         if prev_task.status == self.DONE_STATUS:
             return self.WORK_STATUS
         else:
@@ -81,8 +105,7 @@ class Task(models.Model):
         # Для первой задачи равна дате начала работы над цепочкой.
         if self.order == self.FIRST_TASK:
             return self.chain.start_date
-        order_prev_task = self.order - 1
-        prev_task = Task.objects.get(chain=self.chain, order=order_prev_task)
+        prev_task = _prev_task(self)
         # Для статуса WAIT равна дедлайну предыдущей задачи. Если дедлайн
         # просрочен, дата начала задачи не прогнозируема.
         # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
@@ -94,6 +117,26 @@ class Task(models.Model):
         else:
             start_date = prev_task.finish_date
         return start_date
+
+    def be_in_time(self):
+        """Определяет, успевает ли задача к дедлайну."""
+        return self.days_quantity_after_deadline() is None
+
+    def days_to_start(self):
+        """Определяет количество дней, оставшихся до начала работы над задачей.
+
+        Например, задача ограничена сроком [26; 29) и сейчас 23 число.
+        До начала работы осталось 2 полных дня, так как текущий день
+        не учитывается.
+        """
+        start_date = self.start_date()
+        today = datetime.date.today()
+        if start_date is not None and start_date > today:
+            time_to_start = start_date - today - datetime.timedelta(days=1)
+            days_to_start = time_to_start.days
+        else:
+            days_to_start = None
+        return days_to_start
 
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна.
@@ -113,12 +156,18 @@ class Task(models.Model):
 
     def days_quantity_after_deadline(self):
         """Определяет количество дней, на которые просрочена задача."""
+        days_quantity = None
         today = datetime.date.today()
-        if today >= self.deadline:
+        if self.actual_status() == self.DONE_STATUS:
+            # Задача завершена с превышением дедлайна.
+            if self.finish_date >= self.deadline:
+                time_after_deadline = (self.finish_date - self.deadline
+                                       + datetime.timedelta(1))
+                days_quantity = time_after_deadline.days
+        # Задача со статусом WAIT/WORK/STOP превысила дедлайн.
+        elif today >= self.deadline:
             time_after_deadline = today - self.deadline + datetime.timedelta(1)
             days_quantity = time_after_deadline.days
-        else:
-            days_quantity = None
         return days_quantity
 
     def expended_days(self):
@@ -137,6 +186,15 @@ class Task(models.Model):
         else:
             expended_days = None
         return expended_days
+
+
+def _prev_task(task):
+    """Возвращает предыдущую задачу."""
+    if task.order < Task.FIRST_TASK:
+        raise Task.DoesNotExist
+    order_prev_task = task.order - 1
+    prev_task = Task.objects.get(chain=task.chain, order=order_prev_task)
+    return prev_task
 
 
 class StaffProfile(models.Model):

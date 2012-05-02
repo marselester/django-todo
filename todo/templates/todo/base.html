@@ -9,7 +9,7 @@
 <body>
     <div id="header">
         <div id="user">
-            username
+            {{ user.first_name }} {{ user.last_name }}
             <a href="/user/logout"><img src="{{ STATIC_URL }}todo/images/exit.gif" alt="Выход"/></a>
         </div>
         <h1 id="logo"><a href="/"><img src="{{ STATIC_URL }}todo/images/logo.gif"/></a></h1>
