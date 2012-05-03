@@ -159,42 +159,46 @@ def make_fixtures():
         owner=manager,
         start_date=today - datetime.timedelta(days=50)
     )
-    # First task is design for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 1 день.
+    # Осталось -- 1 день.
     design = TaskFactory(
-        worker=designer,
+        status=Task.DONE_STATUS,
         deadline=chain.start_date + datetime.timedelta(days=2),
-        chain=chain,
-        status=Task.DONE_STATUS,
+        finish_date=chain.start_date,
+        worker=designer,
+        chain=chain
     )
-    design.finish_date = design.deadline - datetime.timedelta(days=1)
-    design.save()
-    # Second task is layout for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 2 дня.
+    # Осталось -- 1 день. Задача начала работать на день раньше.
     layout = TaskFactory(
-        worker=ui_engineer,
+        status=Task.DONE_STATUS,
         deadline=design.deadline + datetime.timedelta(days=2),
-        chain=chain,
-        status=Task.DONE_STATUS,
+        finish_date=design.finish_date + datetime.timedelta(days=2),
+        worker=ui_engineer,
+        chain=chain
     )
-    layout.finish_date = layout.deadline - datetime.timedelta(days=1)
-    layout.save()
-    # Third task is core for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 2 дня.
+    # Осталось -- 1 день.
     core = TaskFactory(
-        worker=web_app_developer,
+        status=Task.DONE_STATUS,
         deadline=layout.deadline + datetime.timedelta(days=2),
-        chain=chain,
-        status=Task.DONE_STATUS,
+        finish_date=layout.finish_date + datetime.timedelta(days=2),
+        worker=web_app_developer,
+        chain=chain
     )
-    core.finish_date = core.deadline - datetime.timedelta(days=1)
-    core.save()
-    # Fourth task is content for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 2 дня.
+    # Осталось -- 1 день.
     content = TaskFactory(
-        worker=content_manager,
-        deadline=core.deadline + datetime.timedelta(days=2),
-        chain=chain,
         status=Task.DONE_STATUS,
+        deadline=core.deadline + datetime.timedelta(days=2),
+        finish_date=core.finish_date + datetime.timedelta(days=2),
+        worker=content_manager,
+        chain=chain
     )
-    content.finish_date = content.deadline - datetime.timedelta(days=1)
-    content.save()
 
     # Chain is overdue.
     chain = ChainFactory(
@@ -202,42 +206,47 @@ def make_fixtures():
         owner=manager,
         start_date=today - datetime.timedelta(days=666)
     )
-    # First task is design for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 4 дня.
+    # Просрочено -- 2 дня.
     design = TaskFactory(
-        worker=designer,
+        status=Task.DONE_STATUS,
         deadline=chain.start_date + datetime.timedelta(days=2),
-        chain=chain,
-        status=Task.DONE_STATUS,
+        finish_date=chain.start_date + datetime.timedelta(days=3),
+        worker=designer,
+        chain=chain
     )
-    design.finish_date = design.deadline - datetime.timedelta(days=1)
-    design.save()
-    # Second task is layout for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 1 день.
+    # Просрочено -- 1 день, так как предыдущая задача использовала все дни
+    # данной задачи.
     layout = TaskFactory(
-        worker=ui_engineer,
+        status=Task.DONE_STATUS,
         deadline=design.deadline + datetime.timedelta(days=2),
+        finish_date=design.finish_date + datetime.timedelta(days=1),
+        worker=ui_engineer,
         chain=chain,
-        status=Task.DONE_STATUS,
     )
-    layout.finish_date = layout.deadline - datetime.timedelta(days=1)
-    layout.save()
-    # Third task is core for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 2 дня.
+    # Просрочено -- 1 день.
     core = TaskFactory(
-        worker=web_app_developer,
+        status=Task.DONE_STATUS,
         deadline=layout.deadline + datetime.timedelta(days=2),
-        chain=chain,
-        status=Task.DONE_STATUS,
+        finish_date=layout.finish_date + datetime.timedelta(days=2),
+        worker=web_app_developer,
+        chain=chain
     )
-    core.finish_date = core.deadline - datetime.timedelta(days=1)
-    core.save()
-    # Fourth task is content for 2 days.
+    # Выделено -- 2 дня.
+    # Затрачено -- 3 дня.
+    # Просрочено -- 2 дня.
     content = TaskFactory(
-        worker=content_manager,
-        deadline=core.deadline + datetime.timedelta(days=2),
-        chain=chain,
         status=Task.DONE_STATUS,
+        deadline=core.deadline + datetime.timedelta(days=2),
+        finish_date=core.finish_date + datetime.timedelta(days=3),
+        worker=content_manager,
+        chain=chain
     )
-    content.finish_date = content.deadline
-    content.save()
 
     # Chain was stopped.
     chain = ChainFactory(

@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from todo.models import Task
+from todo.models import Chain, Task
 
 
 @login_required
@@ -35,9 +35,15 @@ def task_archive(request):
     return render(request, 'todo/task_archive.html')
 
 
+@login_required
 def actual_chains(request):
     """Отображает список актуальных цепочек задач для владельца."""
-    return render(request, 'todo/chain_list.html', {'place': 'chains'})
+    user = request.user
+    actual_chains = Chain.objects.by_owner(user).actual()
+    return render(request, 'todo/chain_list.html', {
+        'place': 'chains',
+        'actual_chains': actual_chains,
+    })
 
 
 def chain_archive(request):

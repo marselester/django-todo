@@ -23,6 +23,15 @@ class Chain(models.Model):
 
     def actual_status(self):
         """Определяет фактический статус цепочки."""
+        if self.start_date > datetime.date.today():
+            return Task.WAIT_STATUS
+        if self.task_set.filter(status=Task.STOP_STATUS).exists():
+            return Task.STOP_STATUS
+        last_task = Task.objects.last_task_in_chain(self)
+        if last_task.actual_status() == Task.DONE_STATUS:
+            return Task.DONE_STATUS
+        else:
+            return Task.WORK_STATUS
 
     def deadline(self):
         """Определяет дедлайн цепочки."""
@@ -108,14 +117,15 @@ class Task(models.Model):
         prev_task = _prev_task(self)
         # Для статуса WAIT равна дедлайну предыдущей задачи. Если дедлайн
         # просрочен, дата начала задачи не прогнозируема.
-        # Для статусов WORK, DONE, STOP равна дате окончания предыдущей задачи.
+        # Для статусов WORK, DONE, STOP равна следующей дате, после окончания
+        # предыдущей задачи.
         if self.actual_status() == self.WAIT_STATUS:
             if prev_task.deadline > datetime.date.today():
                 start_date = prev_task.deadline
             else:
                 start_date = None
         else:
-            start_date = prev_task.finish_date
+            start_date = prev_task.finish_date + datetime.timedelta(days=1)
         return start_date
 
     def be_in_time(self):
@@ -186,6 +196,15 @@ class Task(models.Model):
         else:
             expended_days = None
         return expended_days
+
+    def duration(self):
+        """Определяет количество дней, выделенных на выполнение задачи."""
+        if self.order == self.FIRST_TASK:
+            duration = self.deadline - self.chain.start_date
+        else:
+            prev_task = _prev_task(self)
+            duration = self.deadline - prev_task.deadline
+        return duration.days
 
 
 def _prev_task(task):

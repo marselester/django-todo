@@ -137,8 +137,9 @@ class StartDateTest(TaskTest):
     def test_work(self):
         """Тестирует дату начала работы задачи со статусом WORK.
 
-        Дата начала совпадает с датой окончания предыдущей задачи (DONE). Это
-        условие верно и для задач со статусом DONE или STOP.
+        Дата начала задачи наступает на следующий день после окончания
+        предыдущей задачи (DONE). Это условие верно и для задач со статусом
+        DONE или STOP.
         """
         today = datetime.date.today()
         chain_start_date = today - datetime.timedelta(days=2)
@@ -151,9 +152,9 @@ class StartDateTest(TaskTest):
         deadline_second_task = deadline_first_task + datetime.timedelta(days=2)
         Task.objects.create(worker=self.programmer, task='Programming',
                             deadline=deadline_second_task, chain=chain)
-        first_task = Task.objects.get(task='Design')
-        second_task = Task.objects.get(task='Programming')
-        self.assertEqual(second_task.start_date(), first_task.finish_date)
+        design_finish = Task.objects.get(task='Design').finish_date
+        prog_start = Task.objects.get(task='Programming').start_date()
+        self.assertEqual(prog_start, design_finish + datetime.timedelta(1))
 
     def test_unpredictable(self):
         """Тестирует непрогнозируемую дату начала работы задачи.
@@ -339,3 +340,31 @@ class DaysToStartTest(TaskTest):
         task.status = task.DONE_STATUS
         task.finish_date = today
         self.assertIsNone(task.days_to_start())
+
+
+class DurationTest(TestCase):
+    """Тестирует определение количества дней, выделенных на выполнение задачи.
+    """
+    def setUp(self):
+        """Создает две задачи. Первой выделено 3 дня, второй 2 дня.
+
+        Например, первая задача ограничена сроком [2; 5), вторая -- [5; 7)
+        """
+        today = datetime.date.today()
+        chain = factories.ChainFactory(start_date=today)
+        self.first_task = factories.TaskFactory(
+            deadline=chain.start_date + datetime.timedelta(days=3),
+            chain=chain
+        )
+        self.second_task = factories.TaskFactory(
+            deadline=self.first_task.deadline + datetime.timedelta(days=2),
+            chain=chain
+        )
+
+    def test_first_task_in_chain(self):
+        """Задача стоит первой в цепочке."""
+        self.assertEqual(self.first_task.duration(), 3)
+
+    def test_second_task_in_chain(self):
+        """Задача стоит второй в цепочке."""
+        self.assertEqual(self.second_task.duration(), 2)
