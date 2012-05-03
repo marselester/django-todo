@@ -32,7 +32,7 @@ class Chain(models.Model):
             return self.WAIT_STATUS
         if self.task_set.filter(status=Task.STOP_STATUS).exists():
             return self.STOP_STATUS
-        last_task = Task.objects.last_task_in_chain(self)
+        last_task = self.last_task()
         if last_task.actual_status() == Task.DONE_STATUS:
             return self.DONE_STATUS
         else:
@@ -51,6 +51,10 @@ class Chain(models.Model):
 
     def expended_days(self):
         """Определяет количество дней, затраченных на цепочку."""
+
+    def last_task(self):
+        """Возвращает последнуюю задачу из цепочки."""
+        return self.task_set.latest('deadline')
 
 
 class Task(models.Model):
@@ -89,7 +93,7 @@ class Task(models.Model):
         # Расчитывает порядковый номер у новой задачи.
         if not self.pk:
             try:
-                last_task = Task.objects.last_task_in_chain(self.chain)
+                last_task = self.chain.last_task()
                 self.order = last_task.order + 1
             except self.DoesNotExist:
                 self.order = self.FIRST_TASK
