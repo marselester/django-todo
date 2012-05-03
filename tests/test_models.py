@@ -368,3 +368,29 @@ class DurationTest(TestCase):
     def test_second_task_in_chain(self):
         """Задача стоит второй в цепочке."""
         self.assertEqual(self.second_task.duration(), 2)
+
+
+class ChainActualStatusTest(TestCase):
+    """Тестирует определение фактического статуса цепочки задач."""
+    def setUp(self):
+        factories.make_fixtures()
+
+    def test_chain_wait(self):
+        """Цепочка ожидает начала работы."""
+        chain = Chain.objects.get(name='Chain waits')
+        self.assertEqual(chain.actual_status(), Chain.WAIT_STATUS)
+
+    def test_chain_work(self):
+        """Цепочка работает."""
+        chain = Chain.objects.get(name='Chain works')
+        self.assertEqual(chain.actual_status(), Chain.WORK_STATUS)
+
+    def test_chain_stop(self):
+        """Цепочка остановлена."""
+        chain = Chain.objects.get(name='Chain was stopped')
+        self.assertEqual(chain.actual_status(), Chain.STOP_STATUS)
+
+    def test_chain_done(self):
+        """Цепочка завершена."""
+        chain = Chain.objects.get(name='Chain was completed in time')
+        self.assertEqual(chain.actual_status(), Chain.DONE_STATUS)
