@@ -10,6 +10,11 @@ from todo.managers import ChainQuerySet, TaskQuerySet
 
 class Chain(models.Model):
     """Цепочка задач."""
+    DONE_STATUS = 'done'
+    STOP_STATUS = 'stop'
+    WAIT_STATUS = 'wait'
+    WORK_STATUS = 'work'
+
     # Core fields.
     name = models.TextField()
     start_date = models.DateField()
@@ -24,14 +29,14 @@ class Chain(models.Model):
     def actual_status(self):
         """Определяет фактический статус цепочки."""
         if self.start_date > datetime.date.today():
-            return Task.WAIT_STATUS
+            return self.WAIT_STATUS
         if self.task_set.filter(status=Task.STOP_STATUS).exists():
-            return Task.STOP_STATUS
+            return self.STOP_STATUS
         last_task = Task.objects.last_task_in_chain(self)
         if last_task.actual_status() == Task.DONE_STATUS:
-            return Task.DONE_STATUS
+            return self.DONE_STATUS
         else:
-            return Task.WORK_STATUS
+            return self.WORK_STATUS
 
     def deadline(self):
         """Определяет дедлайн цепочки."""
