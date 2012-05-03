@@ -4,7 +4,15 @@
 <div id="chain">
 <ul>
 {% for chain in actual_chains %}
-    <li>
+    <li
+        {% if chain.actual_status == chain.DONE_STATUS %}
+            class="done"
+        {% endif %}
+
+        {% if chain.actual_status == chain.STOP_STATUS %}
+            class="stop"
+        {% endif %}
+    >
         <a href="">{{ chain.name }}</a>
         <small class="tips"></small>
         {% include "todo/includes/chain.html" %}

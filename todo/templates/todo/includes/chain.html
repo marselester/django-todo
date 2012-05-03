@@ -8,7 +8,7 @@
         {% endif %}
 
         {% if task.actual_status == task.WAIT_STATUS %}
-            {% if chain.actual_status != task.STOP_STATUS %}
+            {% if chain.actual_status != chain.STOP_STATUS %}
             <td class="wait" style="width: {{ task.duration }}px">
                 <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_wait.gif"/></a>
                 <small>{{ task.duration }}<br/><br/></small>
@@ -48,6 +48,12 @@
         </td>
         {% endif %}
     {% endfor %}
+
+    {% if chain.actual_status == chain.DONE_STATUS %}
+        <td><img src="{{ STATIC_URL }}todo/images/chain_done.gif"></td>
+    {% else %}
+        <td><img src="{{ STATIC_URL }}todo/images/chain_wait.gif"></td>
+    {% endif %}
     </tr>
 
     <tr class="people">
