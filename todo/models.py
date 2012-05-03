@@ -23,6 +23,15 @@ class Chain(models.Model):
 
     def actual_status(self):
         """Определяет фактический статус цепочки."""
+        if self.start_date > datetime.date.today():
+            return Task.WAIT_STATUS
+        if self.task_set.filter(status=Task.STOP_STATUS).exists():
+            return Task.STOP_STATUS
+        last_task = Task.objects.last_task_in_chain(self)
+        if last_task.actual_status() == Task.DONE_STATUS:
+            return Task.DONE_STATUS
+        else:
+            return Task.WORK_STATUS
 
     def deadline(self):
         """Определяет дедлайн цепочки."""
