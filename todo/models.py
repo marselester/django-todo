@@ -59,6 +59,17 @@ class Chain(models.Model):
         """Определяет, успевает ли цепочка задач к дедлайну."""
         return self.days_quantity_after_deadline() is None
 
+    def days_to_start(self):
+        """Определяет количество дней, оставшихся до начала работы цепочки.
+        """
+        today = datetime.date.today()
+        if self.start_date > today:
+            time_to_start = self.start_date - today - datetime.timedelta(1)
+            days_to_start = time_to_start.days
+        else:
+            days_to_start = None
+        return days_to_start
+
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна цепочки.
 
