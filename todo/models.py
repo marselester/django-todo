@@ -47,12 +47,22 @@ class Chain(models.Model):
         return last_task.deadline
 
     def remaining_days(self):
-        """Определяет количество дней, оставшихся до дедлайна последней задачи.
+        """Определяет количество дней, оставшихся до дедлайна цепочки.
+
+        Совпадает с количеством дней, оставшихся до дедлайна последней
+        задачи в цепочке.
         """
+        last_task = self.last_task()
+        return last_task.remaining_days()
 
     def days_quantity_after_deadline(self):
-        """Определяет количество дней, на которые просрочена последняя задача.
+        """Определяет количество дней, на которые просрочена цепочка.
+
+        Совпадает с количеством просроченных дней последней
+        задачи в цепочке.
         """
+        last_task = self.last_task()
+        return last_task.days_quantity_after_deadline()
 
     def expended_days(self):
         """Определяет количество дней, затраченных на цепочку."""
