@@ -63,5 +63,17 @@
             <small>{{ task.worker.get_profile.post }}</small>
         </td>
     {% endfor %}
+
+    {% if chain.actual_status == chain.DONE_STATUS %}
+        <td>
+            <b class="taskgood">Дедлайн</b><br/>
+            <small>{{ chain.deadline }}</small>
+        </td>
+    {% else %}
+        <td>
+            <b class="taskbad">Дедлайн</b><br/>
+            <small>{{ chain.deadline }}</small>
+        </td>
+    {% endif %}
     </tr>
 </table>
