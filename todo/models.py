@@ -39,7 +39,12 @@ class Chain(models.Model):
             return self.WORK_STATUS
 
     def deadline(self):
-        """Определяет дедлайн цепочки."""
+        """Определяет дедлайн цепочки.
+
+        Дедлайн цепочки равен дедлайну последней задачи в цепочке.
+        """
+        last_task = self.last_task()
+        return last_task.deadline
 
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна последней задачи.
