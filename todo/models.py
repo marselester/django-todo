@@ -46,6 +46,15 @@ class Chain(models.Model):
         last_task = self.last_task()
         return last_task.deadline
 
+    def finish_date(self):
+        """Определяет дату завершения цепочки.
+
+        Дата завершения цепочки равна дате завершения последней задачи
+        в цепочке.
+        """
+        last_task = self.last_task()
+        return last_task.finish_date
+
     def remaining_days(self):
         """Определяет количество дней, оставшихся до дедлайна цепочки.
 
