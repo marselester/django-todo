@@ -1,5 +1,7 @@
 {% extends "todo/two_columns.html" %}
 
+{% load pytils_numeral %}
+
 {% block left_column %}
 <h6>Список задач:</h6>
 <ul>
@@ -35,11 +37,17 @@
                 {% endif %}
 
                 {% if days_to_start > 0 %}
-                    начнется через <b class="tasknorm">{{ days_to_start }}</b>
+                    начнется через
+                    <b class="tasknorm">
+                        {{ days_to_start|get_plural:"день, дня, дней" }}
+                    </b>
                 {% endif %}
                 {% endwith %}
             {% else %}
-                <b class="taskbad">просрочено на {{ after_deadline }}</b>
+                <b class="taskbad">
+                    просрочено на
+                    {{ after_deadline|get_plural:"день, дня, дней" }}
+                </b>
             {% endif %}
         {% endif %}
 
@@ -48,15 +56,24 @@
                 {% if before_deadline == 0 %}
                     <b class="taskgood">сегодня последний день</b>
                 {% else %}
-                    осталось <b class="taskgood">{{ before_deadline }}</b>
+                    осталось:
+                    <b class="taskgood">
+                        {{ before_deadline|get_plural:"день, дня, дней" }}
+                    </b>
                 {% endif %}
             {% else %}
-                <b class="taskbad">просрочено на {{ after_deadline }}</b>
+                <b class="taskbad">
+                    просрочено на
+                    {{ after_deadline|get_plural:"день, дня, дней" }}
+                </b>
             {% endif %}
         {% endif %}
 
         {% if task_status == task.DONE_STATUS and not task.be_in_time %}
-            <b class="taskbad">просрочено на {{ after_deadline }}</b>
+            <b class="taskbad">
+                просрочено на
+                {{ after_deadline|get_plural:"день, дня, дней" }}
+            </b>
         {% endif %}
         </small>
     </li>
