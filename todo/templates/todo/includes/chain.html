@@ -1,27 +1,31 @@
+{% load todo_tags %}
+
 <table class="chain">
     <tr class="dots">
     {% for task in chain.task_set.all %}
+        {% with width_td=task.duration|mul:"30" %}
+
         {% if task.actual_status == task.STOP_STATUS %}
-        <td style="width: {{ task.duration }}px">
+        <td style="width: {{ width_td }}px">
             <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_stop.gif"/></a>
         </td>
         {% endif %}
 
         {% if task.actual_status == task.WAIT_STATUS %}
             {% if chain.actual_status != chain.STOP_STATUS %}
-            <td class="wait" style="width: {{ task.duration }}px">
+            <td class="wait" style="width: {{ width_td }}px">
                 <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_wait.gif"/></a>
                 <small>{{ task.duration }}<br/><br/></small>
             </td>
             {% else %}
-            <td style="width: {{ task.duration }}px">
+            <td style="width: {{ width_td }}px">
                 <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_wait.gif"/></a>
             </td>
             {% endif %}
         {% endif %}
 
         {% if task.actual_status == task.WORK_STATUS %}
-        <td class="wait" style="width: {{ task.duration }}px">
+        <td class="wait" style="width: {{ width_td }}px">
             <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_work.gif"/></a>
             <small>
                 {{ task.duration }}<br/><br/>
@@ -35,7 +39,7 @@
         {% endif %}
 
         {% if task.actual_status == task.DONE_STATUS %}
-        <td class="done" style="width: {{ task.duration }}px">
+        <td class="done" style="width: {{ width_td }}px">
             <a href="#"><img src="{{ STATIC_URL }}todo/images/chain_done.gif"/></a>
             <small>
                 {{ task.duration }}<br/><br/>
@@ -47,6 +51,8 @@
             </small>
         </td>
         {% endif %}
+
+        {% endwith %}
     {% endfor %}
 
     {% if chain.actual_status == chain.DONE_STATUS %}
