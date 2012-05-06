@@ -7,7 +7,10 @@ setup(
     long_description=open('README.rst').read(),
     author='marselester',
     author_email='marselester@ya.ru',
-    packages=['todo', ],
+    packages=[
+        'todo',
+        'todo.templatetags',
+    ],
     include_package_data=True,
     install_requires=[
         'Django >= 1.3.1',
