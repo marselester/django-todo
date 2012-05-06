@@ -1,5 +1,7 @@
 {% extends "todo/base.html" %}
 
+{% load pytils_numeral %}
+
 {% block content %}
 <div id="chain">
 <ul>
@@ -18,21 +20,31 @@
         {% if chain.actual_status == chain.WAIT_STATUS %}
             <small class="tips">
                 Начнет работать через
-                <b class="tasknew">{{ chain.days_to_start }}</b>
+                <b class="tasknew">
+                    {{ chain.days_to_start|get_plural:"день, дня, дней" }}
+                </b>
                 ({{ chain.start_date }})
             </small>
         {% endif %}
 
         {% if chain.actual_status == chain.WORK_STATUS %}
             <small class="tips">
-                Работает <b class="tasknew">{{ chain.expended_days }}</b>
+                Работает
+                <b class="tasknew">
+                    {{ chain.expended_days|get_plural:"день, дня, дней" }}
+                </b>
             </small>
             <small class="tips">
                 Дедлайн
             {% if chain.be_in_time %}
-                <b class="taskgood">через {{ chain.remaining_days }}</b>
+                <b class="taskgood">
+                    через {{ chain.remaining_days|get_plural:"день, дня, дней" }}
+                </b>
             {% else %}
-                <b class="taskbad">просрочен на {{ chain.days_quantity_after_deadline }}</b>
+                <b class="taskbad">
+                    просрочен на
+                    {{ chain.days_quantity_after_deadline|get_plural:"день, дня, дней" }}
+                </b>
             {% endif %}
             </small>
         {% endif %}
@@ -40,14 +52,16 @@
         {% if chain.actual_status == chain.DONE_STATUS %}
             <small class="tips">
                 <b class="taskgood">
-                    Выполнено {{ chain.finish_date }} за {{ chain.expended_days }}
+                    Выполнено {{ chain.finish_date }} за
+                    {{ chain.expended_days|get_plural:"день, дня, дней" }}
                 </b>
             </small>
             {% if not chain.be_in_time %}
                 <small class="tips">
                     Дедлайн
                     <b class="taskbad">
-                        просрочен на {{ chain.days_quantity_after_deadline }}
+                        просрочен на
+                        {{ chain.days_quantity_after_deadline|get_plural:"день, дня, дней" }}
                     </b>
                 </small>
             {% endif %}
