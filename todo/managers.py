@@ -20,7 +20,3 @@ class TaskQuerySet(QuerySet):
     def actual(self):
         """Возвращает актуальные задачи."""
         return self.filter(archive=False).order_by('deadline')
-
-    def last_task_in_chain(self, chain):
-        """Возвращает последнуюю задачу из цепочки."""
-        return self.filter(chain=chain).latest('order')

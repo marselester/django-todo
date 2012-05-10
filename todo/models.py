@@ -10,6 +10,11 @@ from todo.managers import ChainQuerySet, TaskQuerySet
 
 class Chain(models.Model):
     """Цепочка задач."""
+    DONE_STATUS = 'done'
+    STOP_STATUS = 'stop'
+    WAIT_STATUS = 'wait'
+    WORK_STATUS = 'work'
+
     # Core fields.
     name = models.TextField()
     start_date = models.DateField()
@@ -24,28 +29,85 @@ class Chain(models.Model):
     def actual_status(self):
         """Определяет фактический статус цепочки."""
         if self.start_date > datetime.date.today():
-            return Task.WAIT_STATUS
+            return self.WAIT_STATUS
         if self.task_set.filter(status=Task.STOP_STATUS).exists():
-            return Task.STOP_STATUS
-        last_task = Task.objects.last_task_in_chain(self)
+            return self.STOP_STATUS
+        last_task = self.last_task()
         if last_task.actual_status() == Task.DONE_STATUS:
-            return Task.DONE_STATUS
+            return self.DONE_STATUS
         else:
-            return Task.WORK_STATUS
+            return self.WORK_STATUS
 
     def deadline(self):
-        """Определяет дедлайн цепочки."""
+        """Определяет дедлайн цепочки.
+
+        Дедлайн цепочки равен дедлайну последней задачи в цепочке.
+        """
+        last_task = self.last_task()
+        return last_task.deadline
+
+    def finish_date(self):
+        """Определяет дату завершения цепочки.
+
+        Дата завершения цепочки равна дате завершения последней задачи
+        в цепочке.
+        """
+        last_task = self.last_task()
+        return last_task.finish_date
+
+    def be_in_time(self):
+        """Определяет, успевает ли цепочка задач к дедлайну."""
+        return self.days_quantity_after_deadline() is None
+
+    def days_to_start(self):
+        """Определяет количество дней, оставшихся до начала работы цепочки.
+        """
+        today = datetime.date.today()
+        if self.start_date > today:
+            time_to_start = self.start_date - today - datetime.timedelta(1)
+            days_to_start = time_to_start.days
+        else:
+            days_to_start = None
+        return days_to_start
 
     def remaining_days(self):
-        """Определяет количество дней, оставшихся до дедлайна последней задачи.
+        """Определяет количество дней, оставшихся до дедлайна цепочки.
+
+        Совпадает с количеством дней, оставшихся до дедлайна последней
+        задачи в цепочке.
         """
+        last_task = self.last_task()
+        return last_task.remaining_days()
 
     def days_quantity_after_deadline(self):
-        """Определяет количество дней, на которые просрочена последняя задача.
+        """Определяет количество дней, на которые просрочена цепочка.
+
+        Совпадает с количеством просроченных дней последней
+        задачи в цепочке.
         """
+        last_task = self.last_task()
+        return last_task.days_quantity_after_deadline()
 
     def expended_days(self):
         """Определяет количество дней, затраченных на цепочку."""
+        status = self.actual_status()
+        if status == self.WAIT_STATUS:
+            expended_days = 0
+        elif status == self.WORK_STATUS:
+            today = datetime.date.today()
+            expended_time = today - self.start_date + datetime.timedelta(1)
+            expended_days = expended_time.days
+        elif status == self.DONE_STATUS:
+            expended_time = (self.finish_date() - self.start_date
+                             + datetime.timedelta(days=1))
+            expended_days = expended_time.days
+        else:
+            expended_days = None
+        return expended_days
+
+    def last_task(self):
+        """Возвращает последнуюю задачу из цепочки."""
+        return self.task_set.latest('deadline')
 
 
 class Task(models.Model):
@@ -84,7 +146,7 @@ class Task(models.Model):
         # Расчитывает порядковый номер у новой задачи.
         if not self.pk:
             try:
-                last_task = Task.objects.last_task_in_chain(self.chain)
+                last_task = self.chain.last_task()
                 self.order = last_task.order + 1
             except self.DoesNotExist:
                 self.order = self.FIRST_TASK

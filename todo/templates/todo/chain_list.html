@@ -1,12 +1,78 @@
 {% extends "todo/base.html" %}
 
+{% load pytils_numeral %}
+
 {% block content %}
 <div id="chain">
 <ul>
 {% for chain in actual_chains %}
-    <li>
+    <li
+        {% if chain.actual_status == chain.DONE_STATUS %}
+            class="done"
+        {% endif %}
+
+        {% if chain.actual_status == chain.STOP_STATUS %}
+            class="stop"
+        {% endif %}
+    >
         <a href="">{{ chain.name }}</a>
-        <small class="tips"></small>
+
+        {% if chain.actual_status == chain.WAIT_STATUS %}
+            <small class="tips">
+                Начнет работать через
+                <b class="tasknew">
+                    {{ chain.days_to_start|get_plural:"день, дня, дней" }}
+                </b>
+                ({{ chain.start_date }})
+            </small>
+        {% endif %}
+
+        {% if chain.actual_status == chain.WORK_STATUS %}
+            <small class="tips">
+                Работает
+                <b class="tasknew">
+                    {{ chain.expended_days|get_plural:"день, дня, дней" }}
+                </b>
+            </small>
+            <small class="tips">
+                Дедлайн
+            {% if chain.be_in_time %}
+                <b class="taskgood">
+                    через {{ chain.remaining_days|get_plural:"день, дня, дней" }}
+                </b>
+            {% else %}
+                <b class="taskbad">
+                    просрочен на
+                    {{ chain.days_quantity_after_deadline|get_plural:"день, дня, дней" }}
+                </b>
+            {% endif %}
+            </small>
+        {% endif %}
+
+        {% if chain.actual_status == chain.DONE_STATUS %}
+            <small class="tips">
+                <b class="taskgood">
+                    Выполнено {{ chain.finish_date }} за
+                    {{ chain.expended_days|get_plural:"день, дня, дней" }}
+                </b>
+            </small>
+            {% if not chain.be_in_time %}
+                <small class="tips">
+                    Дедлайн
+                    <b class="taskbad">
+                        просрочен на
+                        {{ chain.days_quantity_after_deadline|get_plural:"день, дня, дней" }}
+                    </b>
+                </small>
+            {% endif %}
+        {% endif %}
+
+        {% if chain.actual_status == chain.STOP_STATUS %}
+            <small class="tips">
+                <b class="taskbad">Не работает</b>
+            </small>
+        {% endif %}
+
         {% include "todo/includes/chain.html" %}
     </li>
 {% endfor %}
