@@ -8,9 +8,13 @@ DATABASES = {
 
 INSTALLED_APPS = (
     'todo',
+    'pytils',
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'django.contrib.sessions',
 )
+
+ROOT_URLCONF = 'tests.urls'
 
 AUTH_PROFILE_MODULE = 'todo.StaffProfile'
 
